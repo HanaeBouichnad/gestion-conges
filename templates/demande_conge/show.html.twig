@@ -26,6 +26,19 @@
         <dd class="col-sm-9">{{ demande.statut.label }}</dd>
     </dl>
 
+
+    <h2 class="mt-4">Pièces jointes</h2>
+    {% if demande.piecesJointes is empty %}
+        <p>Aucune pièce jointe.</p>
+    {% else %}
+        <ul>
+            {% for pj in demande.piecesJointes %}
+                <li>{{ pj.nomFichier }} — ajouté le {{ pj.dateAjout|date('d/m/Y') }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    
     <a href="{{ path('demande_conge_index') }}">&larr; Retour à mes demandes</a>
 </div>
 {% endblock %}

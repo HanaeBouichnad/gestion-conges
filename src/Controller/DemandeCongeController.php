@@ -15,6 +15,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Entity\PieceJointe;
+use App\Service\PieceJointeUploader;
 
 #[Route('/demandes')]
 #[IsGranted('ROLE_EMPLOYE')]
@@ -32,7 +34,7 @@ class DemandeCongeController extends AbstractController
     }
 
     #[Route('/nouvelle', name: 'demande_conge_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $em, UserRepository $userRepository): Response
+    public function new(Request $request, EntityManagerInterface $em, UserRepository $userRepository, PieceJointeUploader $uploader): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -61,13 +63,25 @@ class DemandeCongeController extends AbstractController
             $demande->setApprobateur($approbateur);
             $demande->setStatut(StatutDemande::BROUILLON);
 
+            $fichier = $form->get('pieceJointeFichier')->getData();
+            if (!$fichier && $demande->getTypeConge()->isPieceJointeObligatoire()) {
+                $this->addFlash('error', sprintf(
+                    'Une pièce jointe est obligatoire pour le type de congé "%s".',
+                    $demande->getTypeConge()->getLibelle()
+                ));
+                return $this->render('demande_conge/new.html.twig', ['form' => $form]);
+            }
+
             $em->persist($demande);
             $em->flush();
+
+            if ($fichier) {
+                $this->ajouterPieceJointe($demande, $fichier, $uploader, $em);
+            }
 
             $this->addFlash('success', 'La demande de congé a été créée en brouillon.');
             return $this->redirectToRoute('demande_conge_index');
         }
-
         return $this->render('demande_conge/new.html.twig', ['form' => $form]);
     }
 
@@ -132,5 +146,17 @@ class DemandeCongeController extends AbstractController
         }
 
         return [$user];
+    }
+    private function ajouterPieceJointe(DemandeConge $demande, $fichier, PieceJointeUploader $uploader, EntityManagerInterface $em): void
+    {
+        $nomFichier = $uploader->upload($fichier);
+
+        $pieceJointe = new PieceJointe();
+        $pieceJointe->setDemandeConge($demande);
+        $pieceJointe->setNomFichier($fichier->getClientOriginalName());
+        $pieceJointe->setCheminFichier($nomFichier);
+
+        $em->persist($pieceJointe);
+        $em->flush();
     }
 }

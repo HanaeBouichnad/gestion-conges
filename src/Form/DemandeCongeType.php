@@ -14,6 +14,8 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File;
 
 class DemandeCongeType extends AbstractType
 {
@@ -52,6 +54,18 @@ class DemandeCongeType extends AbstractType
                     'Après-midi uniquement' => PeriodeJournee::APRES_MIDI,
                 ],
                 'label' => 'Période',
+            ])
+            ->add('pieceJointeFichier', FileType::class, [
+                'mapped' => false,
+                'required' => false,
+                'label' => 'Pièce jointe (certificat médical, justificatif...)',
+                'constraints' => [
+                    new File(
+                        maxSize: '5M',
+                        mimeTypes: ['application/pdf', 'image/jpeg', 'image/png'],
+                        mimeTypesMessage: 'Merci de déposer un fichier PDF, JPEG ou PNG.',
+                    ),
+                ],
             ])
             ->add('description', TextareaType::class, [
                 'required' => false,
