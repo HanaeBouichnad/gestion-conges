@@ -15,10 +15,11 @@ class DemandeCongeVoter extends Voter
     public const DELETE = 'DEMANDE_DELETE';
     public const VIEW = 'DEMANDE_VIEW';
     public const ENVOYER = 'DEMANDE_ENVOYER';
+    public const APPROUVER = 'DEMANDE_APPROUVER';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, [self::EDIT, self::DELETE, self::VIEW, self::ENVOYER], true)
+        return in_array($attribute, [self::EDIT, self::DELETE, self::VIEW, self::ENVOYER, self::APPROUVER], true)
             && $subject instanceof DemandeConge;
     }
 
@@ -37,6 +38,8 @@ class DemandeCongeVoter extends Voter
                 && $demande->getStatut() === StatutDemande::BROUILLON,
             self::ENVOYER => $this->estAuteur($demande, $user)
                 && $demande->getStatut() === StatutDemande::BROUILLON,
+            self::APPROUVER => $this->estApprobateur($demande, $user)
+                && $demande->getStatut() === StatutDemande::EN_ATTENTE,
             self::VIEW => $this->estAuteur($demande, $user)
                 || $this->estResponsableDe($demande, $user)
                 || in_array('ROLE_RH', $user->getRoles(), true),
@@ -52,5 +55,10 @@ class DemandeCongeVoter extends Voter
     private function estResponsableDe(DemandeConge $demande, User $user): bool
     {
         return $demande->getEmploye()->getResponsable()?->getId() === $user->getId();
+    }
+
+    private function estApprobateur(DemandeConge $demande, User $user): bool
+    {
+        return $demande->getApprobateur()->getId() === $user->getId();
     }
 }

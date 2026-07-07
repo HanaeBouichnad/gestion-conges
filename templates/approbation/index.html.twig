@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Demandes à approuver{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Demandes en attente d'approbation</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+
+    {% if demandes is empty %}
+        <p>Aucune demande en attente.</p>
+    {% else %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Employé</th>
+                    <th>Type</th>
+                    <th>Du</th>
+                    <th>Au</th>
+                    <th>Description</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for demande in demandes %}
+                    <tr>
+                        <td>{{ demande.employe.nomComplet }}</td>
+                        <td>{{ demande.typeConge.libelle }}</td>
+                        <td>{{ demande.dateDebut|date('d/m/Y') }}</td>
+                        <td>{{ demande.dateFin|date('d/m/Y') }}</td>
+                        <td>{{ demande.description|default('—') }}</td>
+                        <td>
+                            <form method="post" action="{{ path('approbation_approuver', {id: demande.id}) }}" style="display:inline" onsubmit="return confirm('Approuver cette demande ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('approuver' ~ demande.id) }}">
+                                <button type="submit" class="btn btn-success btn-sm">Approuver</button>
+                            </form>
+                            <a href="{{ path('approbation_refuser', {id: demande.id}) }}" class="btn btn-danger btn-sm">Refuser</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+{% endblock %}

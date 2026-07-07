@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Refuser la demande{% endblock %}
+
+{% block body %}
+<div class="container mt-4" style="max-width: 600px;">
+    <h1>Refuser la demande de {{ demande.employe.nomComplet }}</h1>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit" class="btn btn-danger mt-3">Confirmer le refus</button>
+    {{ form_end(form) }}
+</div>
+{% endblock %}
