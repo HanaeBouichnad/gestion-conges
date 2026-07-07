@@ -23,12 +23,16 @@ class AppFixtures extends Fixture
         $typeRecup = $this->creerType($manager, 'Récupération', false);
         $typeExceptionnel = $this->creerType($manager, 'Congé exceptionnel', false);
 
-        // --- Jours fériés (RG-44) : exemples, à adapter au pays réel de l'appli ---
         $feries = [
-            ['2026-01-01', "Jour de l'An"],
+            ['2026-01-01', 'Nouvel An'],
+            ['2026-01-11', 'Manifeste de l’Indépendance'],
             ['2026-05-01', 'Fête du Travail'],
-            ['2026-07-21', 'Fête Nationale'],
-            ['2026-12-25', 'Noël'],
+            ['2026-07-30', 'Fête du Trône'],
+            ['2026-08-14', 'Journée Oued Eddahab'],
+            ['2026-08-20', 'Révolution du Roi et du Peuple'],
+            ['2026-08-21', 'Fête de la Jeunesse'],
+            ['2026-11-06', 'Marche Verte'],
+            ['2026-11-18', 'Fête de l’Indépendance'],
         ];
         foreach ($feries as [$date, $libelle]) {
             $jf = new JourFerie();
