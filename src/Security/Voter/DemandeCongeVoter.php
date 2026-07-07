@@ -14,10 +14,11 @@ class DemandeCongeVoter extends Voter
     public const EDIT = 'DEMANDE_EDIT';
     public const DELETE = 'DEMANDE_DELETE';
     public const VIEW = 'DEMANDE_VIEW';
+    public const ENVOYER = 'DEMANDE_ENVOYER';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, [self::EDIT, self::DELETE, self::VIEW], true)
+        return in_array($attribute, [self::EDIT, self::DELETE, self::VIEW, self::ENVOYER], true)
             && $subject instanceof DemandeConge;
     }
 
@@ -33,6 +34,8 @@ class DemandeCongeVoter extends Voter
 
         return match ($attribute) {
             self::EDIT, self::DELETE => $this->estAuteur($demande, $user)
+                && $demande->getStatut() === StatutDemande::BROUILLON,
+            self::ENVOYER => $this->estAuteur($demande, $user)
                 && $demande->getStatut() === StatutDemande::BROUILLON,
             self::VIEW => $this->estAuteur($demande, $user)
                 || $this->estResponsableDe($demande, $user)

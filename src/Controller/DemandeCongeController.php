@@ -123,6 +123,26 @@ class DemandeCongeController extends AbstractController
         return $this->render('demande_conge/edit.html.twig', ['form' => $form, 'demande' => $demande]);
     }
 
+    #[Route('/{id}/envoyer', name: 'demande_conge_envoyer', methods: ['POST'])]
+    public function envoyer(Request $request, DemandeConge $demande, EntityManagerInterface $em): Response
+    {
+        $this->denyAccessUnlessGranted(DemandeCongeVoter::ENVOYER, $demande);
+
+        if (!$this->isCsrfTokenValid('envoyer'.$demande->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', 'Jeton de sécurité invalide.');
+            return $this->redirectToRoute('demande_conge_index');
+        }
+
+        $demande->setStatut(StatutDemande::EN_ATTENTE);
+        $demande->setDateModification(new \DateTimeImmutable());
+        $em->flush();
+
+        // RG-21 : notification de l'approbateur (mail simple, cf etape mailer si activee plus tard)
+
+        $this->addFlash('success', 'La demande a été envoyée et est en attente d\'approbation.');
+        return $this->redirectToRoute('demande_conge_index');
+    }
+
     #[Route('/{id}/supprimer', name: 'demande_conge_delete', methods: ['POST'])]
     public function delete(Request $request, DemandeConge $demande, EntityManagerInterface $em): Response
     {

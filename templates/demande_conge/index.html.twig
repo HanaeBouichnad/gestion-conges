@@ -43,6 +43,12 @@
                             {% if is_granted('DEMANDE_EDIT', demande) %}
                                 | <a href="{{ path('demande_conge_edit', {id: demande.id}) }}">Modifier</a>
                             {% endif %}
+                            {% if is_granted('DEMANDE_ENVOYER', demande) %}
+                                | <form method="post" action="{{ path('demande_conge_envoyer', {id: demande.id}) }}" style="display:inline" onsubmit="return confirm('Envoyer cette demande pour approbation ? Elle ne sera plus modifiable directement.');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('envoyer' ~ demande.id) }}">
+                                    <button type="submit" class="btn btn-link p-0">Valider</button>
+                                </form>
+                            {% endif %}
                             {% if is_granted('DEMANDE_DELETE', demande) %}
                                 | <form method="post" action="{{ path('demande_conge_delete', {id: demande.id}) }}" style="display:inline" onsubmit="return confirm('Supprimer cette demande ?');">
                                     <input type="hidden" name="_token" value="{{ csrf_token('supprimer' ~ demande.id) }}">
