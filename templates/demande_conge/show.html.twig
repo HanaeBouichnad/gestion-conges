@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détail de la demande{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Demande de congé</h1>
+
+    <dl class="row">
+        <dt class="col-sm-3">Employé</dt>
+        <dd class="col-sm-9">{{ demande.employe.nomComplet }}</dd>
+
+        <dt class="col-sm-3">Type</dt>
+        <dd class="col-sm-9">{{ demande.typeConge.libelle }}</dd>
+
+        <dt class="col-sm-3">Période</dt>
+        <dd class="col-sm-9">{{ demande.dateDebut|date('d/m/Y') }} au {{ demande.dateFin|date('d/m/Y') }}</dd>
+
+        <dt class="col-sm-3">Description</dt>
+        <dd class="col-sm-9">{{ demande.description|default('—') }}</dd>
+
+        <dt class="col-sm-3">Approbateur</dt>
+        <dd class="col-sm-9">{{ demande.approbateur.nomComplet }}</dd>
+
+        <dt class="col-sm-3">Statut</dt>
+        <dd class="col-sm-9">{{ demande.statut.label }}</dd>
+    </dl>
+
+    <a href="{{ path('demande_conge_index') }}">&larr; Retour à mes demandes</a>
+</div>
+{% endblock %}

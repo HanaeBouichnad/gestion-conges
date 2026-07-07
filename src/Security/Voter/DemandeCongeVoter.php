@@ -1,0 +1,53 @@
+<?php
+
+namespace App\Security\Voter;
+
+use App\Entity\DemandeConge;
+use App\Entity\User;
+use App\Enum\StatutDemande;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Vote;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+
+class DemandeCongeVoter extends Voter
+{
+    public const EDIT = 'DEMANDE_EDIT';
+    public const DELETE = 'DEMANDE_DELETE';
+    public const VIEW = 'DEMANDE_VIEW';
+
+    protected function supports(string $attribute, mixed $subject): bool
+    {
+        return in_array($attribute, [self::EDIT, self::DELETE, self::VIEW], true)
+            && $subject instanceof DemandeConge;
+    }
+
+    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
+    {
+        $user = $token->getUser();
+        if (!$user instanceof User) {
+            return false;
+        }
+
+        /** @var DemandeConge $demande */
+        $demande = $subject;
+
+        return match ($attribute) {
+            self::EDIT, self::DELETE => $this->estAuteur($demande, $user)
+                && $demande->getStatut() === StatutDemande::BROUILLON,
+            self::VIEW => $this->estAuteur($demande, $user)
+                || $this->estResponsableDe($demande, $user)
+                || in_array('ROLE_RH', $user->getRoles(), true),
+            default => false,
+        };
+    }
+
+    private function estAuteur(DemandeConge $demande, User $user): bool
+    {
+        return $demande->getEmploye()->getId() === $user->getId();
+    }
+
+    private function estResponsableDe(DemandeConge $demande, User $user): bool
+    {
+        return $demande->getEmploye()->getResponsable()?->getId() === $user->getId();
+    }
+}

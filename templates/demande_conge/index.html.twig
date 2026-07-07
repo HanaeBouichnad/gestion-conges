@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes demandes de congé{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Mes demandes de congé</h1>
+        <a href="{{ path('demande_conge_new') }}" class="btn btn-primary">Nouvelle demande</a>
+    </div>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+
+    {% if demandes is empty %}
+        <p>Aucune demande de congé pour le moment.</p>
+    {% else %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Employé</th>
+                    <th>Type</th>
+                    <th>Du</th>
+                    <th>Au</th>
+                    <th>Statut</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for demande in demandes %}
+                    <tr>
+                        <td>{{ demande.employe.nomComplet }}</td>
+                        <td>{{ demande.typeConge.libelle }}</td>
+                        <td>{{ demande.dateDebut|date('d/m/Y') }}</td>
+                        <td>{{ demande.dateFin|date('d/m/Y') }}</td>
+                        <td>{{ demande.statut.label }}</td>
+                        <td>
+                            <a href="{{ path('demande_conge_show', {id: demande.id}) }}">Voir</a>
+                            {% if is_granted('DEMANDE_EDIT', demande) %}
+                                | <a href="{{ path('demande_conge_edit', {id: demande.id}) }}">Modifier</a>
+                            {% endif %}
+                            {% if is_granted('DEMANDE_DELETE', demande) %}
+                                | <form method="post" action="{{ path('demande_conge_delete', {id: demande.id}) }}" style="display:inline" onsubmit="return confirm('Supprimer cette demande ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('supprimer' ~ demande.id) }}">
+                                    <button type="submit" class="btn btn-link p-0">Supprimer</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+{% endblock %}
