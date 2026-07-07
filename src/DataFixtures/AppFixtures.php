@@ -43,10 +43,10 @@ class AppFixtures extends Fixture
         }
 
         // --- Utilisateurs de test (un par rôle, hiérarchie RG-07/RG-14) ---
-        $admin = $this->creerUser($manager, 'admin@conges.local', 'Admin', 'Système', ['ROLE_ADMIN'], null);
-        $rh = $this->creerUser($manager, 'rh@conges.local', 'Rita', 'RH', ['ROLE_RH'], null);
-        $responsable = $this->creerUser($manager, 'responsable@conges.local', 'Robert', 'Responsable', ['ROLE_RESPONSABLE'], null);
-        $employe = $this->creerUser($manager, 'employe@conges.local', 'Émilie', 'Employée', ['ROLE_EMPLOYE'], $responsable);
+        $admin = $this->creerUser($manager, 'admin@example.com', 'Admin', 'Système', ['ROLE_ADMIN'], null);
+        $rh = $this->creerUser($manager, 'rh@example.com', 'Resh', 'RH', ['ROLE_RH'], null);
+        $responsable = $this->creerUser($manager, 'responsable@example.com', 'Resp', 'Responsable', ['ROLE_RESPONSABLE'], null);
+        $employe = $this->creerUser($manager, 'employe@example.com', 'Emp', 'Employée', ['ROLE_EMPLOYE'], $responsable);
 
         $manager->flush();
 
