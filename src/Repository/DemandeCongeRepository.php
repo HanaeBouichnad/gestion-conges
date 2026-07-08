@@ -38,4 +38,15 @@ class DemandeCongeRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /** @return DemandeConge[] */
+    public function findApprouvees(): array
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.statut = :statut')
+            ->setParameter('statut', StatutDemande::APPROUVE)
+            ->orderBy('d.dateDebut', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

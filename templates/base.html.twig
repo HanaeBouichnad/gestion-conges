@@ -27,6 +27,9 @@
                         {% if is_granted('ROLE_RESPONSABLE') %}
                             <a class="nav-link" href="{{ path('approbation_index') }}">Demandes à approuver</a>
                         {% endif %}
+                        {% if is_granted('ROLE_RH') %}
+                            <a class="nav-link" href="{{ path('rh_demandes_approuvees') }}">Congés approuvés</a>
+                        {% endif %}
                     </div>
                     <div class="navbar-nav ms-auto">
                         <span class="nav-link text-white-50">{{ app.user.nomComplet }}</span>

@@ -16,10 +16,11 @@ class DemandeCongeVoter extends Voter
     public const VIEW = 'DEMANDE_VIEW';
     public const ENVOYER = 'DEMANDE_ENVOYER';
     public const APPROUVER = 'DEMANDE_APPROUVER';
+    public const ANNULER = 'DEMANDE_ANNULER';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, [self::EDIT, self::DELETE, self::VIEW, self::ENVOYER, self::APPROUVER], true)
+        return in_array($attribute, [self::EDIT, self::DELETE, self::VIEW, self::ENVOYER, self::APPROUVER, self::ANNULER], true)
             && $subject instanceof DemandeConge;
     }
 
@@ -40,6 +41,8 @@ class DemandeCongeVoter extends Voter
                 && $demande->getStatut() === StatutDemande::BROUILLON,
             self::APPROUVER => $this->estApprobateur($demande, $user)
                 && $demande->getStatut() === StatutDemande::EN_ATTENTE,
+            self::ANNULER => in_array('ROLE_RH', $user->getRoles(), true)
+                && $demande->getStatut() === StatutDemande::APPROUVE,
             self::VIEW => $this->estAuteur($demande, $user)
                 || $this->estResponsableDe($demande, $user)
                 || in_array('ROLE_RH', $user->getRoles(), true),

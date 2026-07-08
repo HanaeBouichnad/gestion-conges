@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Demandes approuvées{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Demandes de congé approuvées</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+
+    {% if demandes is empty %}
+        <p>Aucune demande approuvée.</p>
+    {% else %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Employé</th>
+                    <th>Type</th>
+                    <th>Du</th>
+                    <th>Au</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for demande in demandes %}
+                    <tr>
+                        <td>{{ demande.employe.nomComplet }}</td>
+                        <td>{{ demande.typeConge.libelle }}</td>
+                        <td>{{ demande.dateDebut|date('d/m/Y') }}</td>
+                        <td>{{ demande.dateFin|date('d/m/Y') }}</td>
+                        <td>
+                            {% if is_granted('DEMANDE_ANNULER', demande) %}
+                                <form method="post" action="{{ path('rh_demande_annuler', {id: demande.id}) }}" style="display:inline" onsubmit="return confirm('Annuler cette demande approuvee ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('annuler' ~ demande.id) }}">
+                                    <button type="submit" class="btn btn-danger btn-sm">Annuler</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+{% endblock %}
