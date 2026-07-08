@@ -33,6 +33,7 @@
                             <a class="nav-link" href="{{ path('rh_demandes_approuvees') }}">Congés approuvés</a>
                             <a class="nav-link" href="{{ path('rh_demandes_toutes') }}">Toutes les demandes</a>
                             <a class="nav-link" href="{{ path('rh_soldes_index') }}">Gestion des soldes</a>
+                            <a class="nav-link" href="{{ path('rh_export_csv') }}">Exporter CSV</a>
                         {% endif %}
                         {% if is_granted('ROLE_ADMIN') %}
                             <a class="nav-link" href="{{ path('admin_jour_ferie_index') }}">Jours fériés</a>
