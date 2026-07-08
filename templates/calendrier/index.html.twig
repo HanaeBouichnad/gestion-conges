@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Calendrier des absences{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Calendrier des absences — {{ debut|default(annee ~ '-' ~ mois)|date('F Y') }}</h1>
+
+    <div class="mb-3">
+        <a href="{{ path('calendrier_index', {mois: moisPrecedent.format('n'), annee: moisPrecedent.format('Y')}) }}" class="btn btn-outline-secondary btn-sm">&laquo; Mois précédent</a>
+        <a href="{{ path('calendrier_index', {mois: moisSuivant.format('n'), annee: moisSuivant.format('Y')}) }}" class="btn btn-outline-secondary btn-sm">Mois suivant &raquo;</a>
+    </div>
+
+    <h2>Congés approuvés</h2>
+    {% if demandes is empty %}
+        <p>Aucune absence ce mois-ci.</p>
+    {% else %}
+        <ul class="list-group mb-4">
+            {% for demande in demandes %}
+                <li class="list-group-item">
+                    {{ demande.employe.nomComplet }} — {{ demande.typeConge.libelle }}
+                    ({{ demande.dateDebut|date('d/m') }} au {{ demande.dateFin|date('d/m') }})
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <h2>Jours fériés</h2>
+    {% if joursFeries is empty %}
+        <p>Aucun jour férié ce mois-ci.</p>
+    {% else %}
+        <ul class="list-group">
+            {% for jf in joursFeries %}
+                <li class="list-group-item">{{ jf.date|date('d/m/Y') }} — {{ jf.libelle }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+{% endblock %}
