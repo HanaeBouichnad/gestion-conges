@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Toutes les demandes{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Toutes les demandes de congé</h1>
+
+    <form method="get" class="row g-2 mb-3">
+        <div class="col-auto">
+            <select name="statut" class="form-select">
+                <option value="">Tous les statuts</option>
+                <option value="brouillon" {{ statutSelectionne == 'brouillon' ? 'selected' }}>Brouillon</option>
+                <option value="en_attente" {{ statutSelectionne == 'en_attente' ? 'selected' }}>En attente</option>
+                <option value="approuve" {{ statutSelectionne == 'approuve' ? 'selected' }}>Approuvé</option>
+                <option value="refuse" {{ statutSelectionne == 'refuse' ? 'selected' }}>Refusé</option>
+                <option value="annule" {{ statutSelectionne == 'annule' ? 'selected' }}>Annulé</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <select name="type" class="form-select">
+                <option value="">Tous les types</option>
+                {% for t in types %}
+                    <option value="{{ t.id }}" {{ typeSelectionne == t.id ? 'selected' }}>{{ t.libelle }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-secondary">Filtrer</button>
+        </div>
+    </form>
+
+    {% if demandes is empty %}
+        <p>Aucune demande.</p>
+    {% else %}
+        <table class="table table-striped">
+            <thead>
+                <tr><th>Employé</th><th>Type</th><th>Du</th><th>Au</th><th>Statut</th></tr>
+            </thead>
+            <tbody>
+                {% for demande in demandes %}
+                    <tr>
+                        <td>{{ demande.employe.nomComplet }}</td>
+                        <td>{{ demande.typeConge.libelle }}</td>
+                        <td>{{ demande.dateDebut|date('d/m/Y') }}</td>
+                        <td>{{ demande.dateFin|date('d/m/Y') }}</td>
+                        <td>{{ demande.statut.label }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+{% endblock %}

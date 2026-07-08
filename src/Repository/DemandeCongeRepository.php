@@ -49,4 +49,19 @@ class DemandeCongeRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /** @return DemandeConge[] */
+    public function findToutesAvecFiltres(?string $statut = null, ?int $typeCongeId = null): array
+    {
+        $qb = $this->createQueryBuilder('d')->orderBy('d.dateCreation', 'DESC');
+
+        if ($statut) {
+            $qb->andWhere('d.statut = :statut')->setParameter('statut', $statut);
+        }
+        if ($typeCongeId) {
+            $qb->andWhere('d.typeConge = :type')->setParameter('type', $typeCongeId);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

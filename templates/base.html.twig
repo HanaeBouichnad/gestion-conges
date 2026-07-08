@@ -29,6 +29,7 @@
                         {% endif %}
                         {% if is_granted('ROLE_RH') %}
                             <a class="nav-link" href="{{ path('rh_demandes_approuvees') }}">Congés approuvés</a>
+                            <a class="nav-link" href="{{ path('rh_demandes_toutes') }}">Toutes les demandes</a>
                         {% endif %}
                     </div>
                     <div class="navbar-nav ms-auto">

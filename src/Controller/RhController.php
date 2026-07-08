@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Repository\TypeCongeRepository;
 
 #[Route('/rh')]
 #[IsGranted('ROLE_RH')]
@@ -41,5 +42,19 @@ class RhController extends AbstractController
 
         $this->addFlash('success', 'La demande a été annulée.');
         return $this->redirectToRoute('rh_demandes_approuvees');
+    }
+    
+    #[Route('/demandes', name: 'rh_demandes_toutes', methods: ['GET'])]
+    public function toutesLesDemandes(Request $request, DemandeCongeRepository $repository, TypeCongeRepository $typeCongeRepository): Response
+    {
+        $statut = $request->query->get('statut');
+        $typeCongeId = $request->query->get('type') ? (int) $request->query->get('type') : null;
+
+        return $this->render('rh/demandes_toutes.html.twig', [
+            'demandes' => $repository->findToutesAvecFiltres($statut, $typeCongeId),
+            'types' => $typeCongeRepository->findAll(),
+            'statutSelectionne' => $statut,
+            'typeSelectionne' => $typeCongeId,
+        ]);
     }
 }
