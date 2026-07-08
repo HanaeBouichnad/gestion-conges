@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes soldes de congé{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Mes soldes de congé</h1>
+    <table class="table table-striped">
+        <thead><tr><th>Type</th><th>Solde (jours)</th></tr></thead>
+        <tbody>
+            {% for solde in soldes %}
+                <tr><td>{{ solde.typeConge.libelle }}</td><td>{{ solde.solde }}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

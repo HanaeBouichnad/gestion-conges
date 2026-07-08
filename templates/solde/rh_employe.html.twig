@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Solde de {{ employe.nomComplet }}{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Solde de {{ employe.nomComplet }}</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+
+    <table class="table table-striped">
+        <thead><tr><th>Type</th><th>Solde (jours)</th><th></th></tr></thead>
+        <tbody>
+            {% for solde in soldes %}
+                <tr>
+                    <td>{{ solde.typeConge.libelle }}</td>
+                    <td>{{ solde.solde }}</td>
+                    <td><a href="{{ path('rh_solde_modifier', {employeId: employe.id, typeId: solde.typeConge.id}) }}">Modifier</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

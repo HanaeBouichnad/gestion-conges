@@ -24,12 +24,14 @@
                     <a class="navbar-brand" href="{{ path('demande_conge_index') }}">Gestion des congés</a>
                     <div class="navbar-nav">
                         <a class="nav-link" href="{{ path('demande_conge_index') }}">Mes demandes</a>
+                        <a class="nav-link" href="{{ path('solde_mes_soldes') }}">Mes soldes</a>
                         {% if is_granted('ROLE_RESPONSABLE') %}
                             <a class="nav-link" href="{{ path('approbation_index') }}">Demandes à approuver</a>
                         {% endif %}
                         {% if is_granted('ROLE_RH') %}
                             <a class="nav-link" href="{{ path('rh_demandes_approuvees') }}">Congés approuvés</a>
                             <a class="nav-link" href="{{ path('rh_demandes_toutes') }}">Toutes les demandes</a>
+                            <a class="nav-link" href="{{ path('rh_soldes_index') }}">Gestion des soldes</a>
                         {% endif %}
                     </div>
                     <div class="navbar-nav ms-auto">
