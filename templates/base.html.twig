@@ -34,6 +34,9 @@
                             <a class="nav-link" href="{{ path('rh_demandes_toutes') }}">Toutes les demandes</a>
                             <a class="nav-link" href="{{ path('rh_soldes_index') }}">Gestion des soldes</a>
                         {% endif %}
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a class="nav-link" href="{{ path('admin_jour_ferie_index') }}">Jours fériés</a>
+                        {% endif %}
                     </div>
                     <div class="navbar-nav ms-auto">
                         <span class="nav-link text-white-50">{{ app.user.nomComplet }}</span>
