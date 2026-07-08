@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier un type de congé{% endblock %}
+
+{% block body %}
+<div class="container mt-4" style="max-width: 500px;">
+    <h1>Modifier le type de congé</h1>
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit" class="btn btn-primary mt-3">Enregistrer</button>
+    {{ form_end(form) }}
+</div>
+{% endblock %}
