@@ -34,11 +34,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private string $prenom;
 
     // RG-07 / RG-14 : responsable hiérarchique direct, sert d'approbateur par défaut (figé, cf RG-14 validé)
-    #[ORM\ManyToOne(targetEntity: self::class)]
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'subordonnes')]
     private ?self $responsable = null;
 
-    #[ORM\OneToMany(mappedBy: 'employe', targetEntity: self::class)]
-    private $subordonnes;
+    #[ORM\OneToMany(mappedBy: 'responsable', targetEntity: self::class)]
+    private Collection $subordonnes;
+  
 
     public function __construct()
     {
@@ -88,7 +89,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->subordonnes->contains($subordonne)) {
             $this->subordonnes->add($subordonne);
-            $subordonne->setEmploye($this);
+            $subordonne->setResponsable($this);
         }
 
         return $this;
@@ -97,9 +98,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeSubordonne(User $subordonne): static
     {
         if ($this->subordonnes->removeElement($subordonne)) {
-            // set the owning side to null (unless already changed)
-            if ($subordonne->getEmploye() === $this) {
-                $subordonne->setEmploye(null);
+            if ($subordonne->getResponsable() === $this) {
+                $subordonne->setResponsable(null);
             }
         }
 
