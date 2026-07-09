@@ -44,14 +44,14 @@ class AppFixtures extends Fixture
 
         // --- Utilisateurs de test (un par rôle, hiérarchie RG-07/RG-14) ---
         $admin = $this->creerUser($manager, 'admin@example.com', 'Admin', 'Système', ['ROLE_ADMIN'], null);
-        $rh = $this->creerUser($manager, 'rh@example.com', 'Ressh', 'RH', ['ROLE_RH'], null);
-        $responsable = $this->creerUser($manager, 'responsable@example.com', 'Resp', 'Responsable', ['ROLE_RESPONSABLE'], null);
+        $responsable = $this->creerUser($manager, 'responsable@example.com', 'Resp', 'Responsable', ['ROLE_RESPONSABLE'], $admin);
+        $rh = $this->creerUser($manager, 'rh@example.com', 'Ressh', 'RH', ['ROLE_RH'], $responsable);
         $employe = $this->creerUser($manager, 'employe@example.com', 'Emp', 'Employée', ['ROLE_EMPLOYE'], $responsable);
 
         $manager->flush();
 
         // --- Soldes initiaux (RG-29/31), gérés manuellement par le RH pour la V1 ---
-        foreach ([$employe, $responsable] as $u) {
+        foreach ([$employe, $responsable, $rh] as $u) {
             foreach ([$typeAnnuel, $typeMaladie, $typeSansSolde, $typeRecup, $typeExceptionnel] as $type) {
                 $solde = new SoldeConge();
                 $solde->setEmploye($u);
