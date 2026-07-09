@@ -20,6 +20,10 @@ class ExportController extends AbstractController
 
         $response = new StreamedResponse(function () use ($demandes) {
             $handle = fopen('php://output', 'w+');
+
+            // BOM UTF-8 : indique a Excel que le fichier est encode en UTF-8
+            fwrite($handle, "\xEF\xBB\xBF");
+
             fputcsv($handle, ['Employe', 'Type', 'Date debut', 'Date fin', 'Statut'], ';');
 
             foreach ($demandes as $demande) {
