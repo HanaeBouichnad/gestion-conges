@@ -1,39 +1,62 @@
-{% extends 'base.html.twig' %}
+{% extends 'app/base.html.twig' %}
 
 {% block title %}Calendrier des absences{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <h1>Calendrier des absences — {{ debut|default(annee ~ '-' ~ mois)|date('F Y') }}</h1>
+    {% set moisAnnee = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'] %}
 
-    <div class="mb-3">
-        <a href="{{ path('calendrier_index', {mois: moisPrecedent.format('n'), annee: moisPrecedent.format('Y')}) }}" class="btn btn-outline-secondary btn-sm">&laquo; Mois précédent</a>
-        <a href="{{ path('calendrier_index', {mois: moisSuivant.format('n'), annee: moisSuivant.format('Y')}) }}" class="btn btn-outline-secondary btn-sm">Mois suivant &raquo;</a>
+    <div class="lp-page-header">
+        <div>
+            <h1>Calendrier</h1>
+            <p class="lp-page-subtitle">Consultez vos congés et planifiez vos demandes.</p>
+        </div>
+        <div class="lp-month-nav">
+            <a href="{{ path('calendrier_index', {mois: moisPrecedent.format('n'), annee: moisPrecedent.format('Y')}) }}" class="lp-icon-btn" title="Mois précédent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg>
+            </a>
+            <span class="lp-month-label">{{ moisAnnee[mois - 1] }} {{ annee }}</span>
+            <a href="{{ path('calendrier_index', {mois: moisSuivant.format('n'), annee: moisSuivant.format('Y')}) }}" class="lp-icon-btn" title="Mois suivant">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+            </a>
+        </div>
     </div>
 
-    <h2>Congés approuvés</h2>
-    {% if demandes is empty %}
-        <p>Aucune absence ce mois-ci.</p>
-    {% else %}
-        <ul class="list-group mb-4">
-            {% for demande in demandes %}
-                <li class="list-group-item">
-                    {{ demande.employe.nomComplet }} — {{ demande.typeConge.libelle }}
-                    ({{ demande.dateDebut|date('d/m') }} au {{ demande.dateFin|date('d/m') }})
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+    <div class="lp-calendar-card">
+        <div class="lp-calendar-weekdays">
+            <span>Lun</span><span>Mar</span><span>Mer</span><span>Jeu</span><span>Ven</span><span>Sam</span><span>Dim</span>
+        </div>
 
-    <h2>Jours fériés</h2>
-    {% if joursFeries is empty %}
-        <p>Aucun jour férié ce mois-ci.</p>
-    {% else %}
-        <ul class="list-group">
-            {% for jf in joursFeries %}
-                <li class="list-group-item">{{ jf.date|date('d/m/Y') }} — {{ jf.libelle }}</li>
+        <div class="lp-cal-weeks">
+            {% for semaine in semaines %}
+                {% set semaineIndex = loop.index0 %}
+                <div class="lp-cal-week">
+                    {% for jour in semaine %}
+                        <div class="lp-cal-day {{ jour.dansMoisCourant ? '' : 'lp-cal-day-muted' }}" style="grid-column: {{ loop.index }}; grid-row: 1 / -1;">
+                            <span class="lp-cal-day-number {{ jour.estAujourdhui ? 'lp-cal-day-today' : '' }}">{{ jour.jour }}</span>
+                            {% if jour.estFerie %}<span class="lp-cal-day-ferie-dot" title="{{ jour.libelleFerie }}"></span>{% endif %}
+                        </div>
+                    {% endfor %}
+
+                    {% for segment in barresParSemaine[semaineIndex] %}
+                        <div
+                            class="lp-cal-bar lp-cal-bar-{{ segment.statutValue }}"
+                            style="grid-column: {{ segment.colStart }} / {{ segment.colEnd }}; grid-row: {{ segment.lane + 2 }};"
+                            title="{{ segment.typeLibelle }} — {{ segment.statutLabel }}"
+                        >
+                            <strong>{{ segment.typeLibelle }}</strong>
+                            <span>{{ segment.statutLabel }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
             {% endfor %}
-        </ul>
-    {% endif %}
-</div>
+        </div>
+
+        <div class="lp-cal-legend">
+            <span class="lp-legend-item"><span class="lp-legend-swatch lp-legend-swatch-brouillon"></span>Brouillon</span>
+            <span class="lp-legend-item"><span class="lp-legend-swatch lp-legend-swatch-en_attente"></span>En attente</span>
+            <span class="lp-legend-item"><span class="lp-legend-swatch lp-legend-swatch-approuve"></span>Approuvé</span>
+            <span class="lp-legend-item"><span class="lp-legend-swatch lp-legend-swatch-refuse"></span>Refusé</span>
+            <span class="lp-legend-item"><span class="lp-legend-swatch lp-legend-swatch-ferie"></span>Jour férié</span>
+        </div>
+    </div>
 {% endblock %}
