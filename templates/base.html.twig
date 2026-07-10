@@ -62,7 +62,7 @@
         {% if app.user %}
             <nav class="navbar navbar-expand navbar-dark bg-dark mb-3">
                 <div class="container">
-                    <a class="navbar-brand" href="{{ path('app_accueil') }}">Gestion des congés</a>
+                    <a class="navbar-brand" href="{{ path('app_home') }}">Gestion des congés</a>
                     <div class="navbar-nav">
                         {% if is_granted('ROLE_ADMIN') %}
                             <a class="nav-link" href="{{ path('approbation_index') }}">Demandes à approuver</a>
