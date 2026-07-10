@@ -1,22 +1,6 @@
 <div class="lp-blobs"><span></span><span></span><span></span></div>
 
-<nav class="lp-navbar">
-    <div class="lp-navbar-inner">
-        <a href="{{ path('app_home') }}" class="lp-logo">
-            <img src="{{ asset('images/logo.png') }}" alt="Webodrop">
-        </a>
-        <div class="lp-nav-links">
-            <a href="#">À propos</a>
-            <a href="#fonctionnalites">Fonctionnalités</a>
-        </div>
-        <div class="lp-nav-actions">
-            <a href="{{ path('app_login') }}" class="lp-role-link" data-login-trigger>Administrateur</a>
-            <a href="{{ path('app_login') }}" class="lp-role-link" data-login-trigger>Responsable</a>
-            <a href="{{ path('app_login') }}" class="lp-role-link" data-login-trigger>RH</a>
-            <a href="{{ path('app_login') }}" class="lp-role-link" data-login-trigger>Employé</a>
-        </div>
-    </div>
-</nav>
+{% include 'home/navbar.html.twig' %}
 
 <header class="lp-hero">
     <div class="lp-container">

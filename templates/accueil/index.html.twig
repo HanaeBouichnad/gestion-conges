@@ -92,14 +92,14 @@
         <div class="row g-4">
             <div class="col-md-7">
                 <h2 class="mb-3" style="font-size: 1.2rem;">Demandes récentes</h2>
-                {% if mesDemandes is empty %}
+                {% if mesDemandesRecentes is empty %}
                     <div class="p-4 rounded-3 text-center" style="background: var(--color-surface); border: 1px dashed var(--color-muted);">
                         <p class="mb-2">Aucune demande pour le moment.</p>
                         <a href="{{ path('demande_conge_new') }}" class="btn btn-stamp btn-sm">+ Nouvelle demande</a>
                     </div>
                 {% else %}
                     <div class="d-flex flex-column gap-2">
-                        {% for demande in mesDemandes %}
+                        {% for demande in mesDemandesRecentes %}
                             <a href="{{ path('demande_conge_show', {id: demande.id}) }}" class="p-3 rounded-3 d-flex justify-content-between align-items-center text-decoration-none" style="background: var(--color-surface); color: var(--color-text);">
                                 <div>
                                     <strong>{{ demande.typeConge.libelle }}</strong>
