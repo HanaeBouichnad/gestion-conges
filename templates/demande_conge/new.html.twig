@@ -1,14 +1,82 @@
-{% extends 'base.html.twig' %}
+{% extends 'app/base.html.twig' %}
 
 {% block title %}Nouvelle demande de congé{% endblock %}
 
 {% block body %}
-<div class="container mt-4" style="max-width: 600px;">
-    <h1>Nouvelle demande de congé</h1>
+    <div class="lp-page-header">
+        <div>
+            <h1>Nouvelle demande de congé</h1>
+            <p class="lp-page-subtitle">Remplissez les informations ci-dessous — la demande sera créée en brouillon.</p>
+        </div>
+    </div>
 
-    {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <button type="submit" class="btn btn-primary mt-3">Créer en brouillon</button>
-    {{ form_end(form) }}
-</div>
+    {% for message in app.flashes('success') %}
+        <div class="lp-alert lp-alert-success">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M5 12l4 4L19 6"/></svg>
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div class="lp-alert lp-alert-error">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <div class="lp-form-card">
+        {{ form_start(form, {attr: {class: 'lp-form'}}) }}
+            {{ form_errors(form) }}
+
+            <div class="lp-field">
+                {{ form_label(form.employe) }}
+                {{ form_widget(form.employe) }}
+                {{ form_errors(form.employe) }}
+            </div>
+
+            <div class="lp-field">
+                {{ form_label(form.typeConge) }}
+                {{ form_widget(form.typeConge) }}
+                {{ form_errors(form.typeConge) }}
+            </div>
+
+            <div class="lp-field-row">
+                <div class="lp-field">
+                    {{ form_label(form.dateDebut) }}
+                    {{ form_widget(form.dateDebut) }}
+                    {{ form_errors(form.dateDebut) }}
+                </div>
+                <div class="lp-field">
+                    {{ form_label(form.dateFin) }}
+                    {{ form_widget(form.dateFin) }}
+                    {{ form_errors(form.dateFin) }}
+                </div>
+            </div>
+
+            <div class="lp-field">
+                {{ form_label(form.periode) }}
+                {{ form_widget(form.periode) }}
+                {{ form_errors(form.periode) }}
+            </div>
+
+            <div class="lp-field">
+                {{ form_label(form.pieceJointeFichier) }}
+                <div class="lp-file-field">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0-12 4 4m-4-4-4 4"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+                    {{ form_widget(form.pieceJointeFichier) }}
+                </div>
+                {{ form_errors(form.pieceJointeFichier) }}
+            </div>
+
+            <div class="lp-field">
+                {{ form_label(form.description) }}
+                {{ form_widget(form.description) }}
+                {{ form_errors(form.description) }}
+            </div>
+
+            <button type="submit" class="lp-btn lp-btn-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                Créer en brouillon
+            </button>
+        {{ form_end(form) }}
+    </div>
 {% endblock %}

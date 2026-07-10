@@ -40,6 +40,42 @@ class DemandeCongeRepository extends ServiceEntityRepository
     }
 
     /** @return DemandeConge[] */
+    public function findMesAbsencesDuMois(User $employe, \DateTimeImmutable $debut, \DateTimeImmutable $fin): array
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.employe = :employe')
+            ->andWhere('d.statut IN (:statuts)')
+            ->andWhere('d.dateDebut <= :fin AND d.dateFin >= :debut')
+            ->setParameter('employe', $employe)
+            ->setParameter('statuts', [
+                StatutDemande::BROUILLON,
+                StatutDemande::EN_ATTENTE,
+                StatutDemande::APPROUVE,
+                StatutDemande::REFUSE,
+            ])
+            ->setParameter('debut', $debut)
+            ->setParameter('fin', $fin)
+            ->orderBy('d.dateDebut', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findProchaineAbsence(User $employe): ?DemandeConge
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.employe = :employe')
+            ->andWhere('d.statut = :statut')
+            ->andWhere('d.dateDebut >= :today')
+            ->setParameter('employe', $employe)
+            ->setParameter('statut', StatutDemande::APPROUVE)
+            ->setParameter('today', new \DateTimeImmutable('today'))
+            ->orderBy('d.dateDebut', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /** @return DemandeConge[] */
     public function findApprouvees(): array
     {
         return $this->createQueryBuilder('d')

@@ -1,50 +1,70 @@
-{% extends 'base.html.twig' %}
+{% extends 'app/base.html.twig' %}
 
 {% block title %}Détail de la demande{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <h1>Demande de congé</h1>
+    <div class="lp-page-header">
+        <div class="lp-page-header-title">
+            <h1>Demande de congé</h1>
+            <span class="status-badge status-{{ demande.statut.value }}">{{ demande.statut.label }}</span>
+        </div>
+    </div>
 
-    <dl class="row">
-        <dt class="col-sm-3">Employé</dt>
-        <dd class="col-sm-9">{{ demande.employe.nomComplet }}</dd>
+    <div class="lp-feature-card">
+        <div class="lp-info-grid">
+            <div class="lp-info-item">
+                <span class="lp-info-label">Employé</span>
+                <span class="lp-info-value">{{ demande.employe.nomComplet }}</span>
+            </div>
+            <div class="lp-info-item">
+                <span class="lp-info-label">Type</span>
+                <span class="lp-info-value">{{ demande.typeConge.libelle }}</span>
+            </div>
+            <div class="lp-info-item">
+                <span class="lp-info-label">Période</span>
+                <span class="lp-info-value">{{ demande.dateDebut|date('d/m/Y') }} au {{ demande.dateFin|date('d/m/Y') }}</span>
+            </div>
+            <div class="lp-info-item">
+                <span class="lp-info-label">Approbateur</span>
+                <span class="lp-info-value">{{ demande.approbateur.nomComplet }}</span>
+            </div>
+            <div class="lp-info-item lp-info-item-full">
+                <span class="lp-info-label">Description</span>
+                <span class="lp-info-value">{{ demande.description|default('—') }}</span>
+            </div>
+        </div>
+    </div>
 
-        <dt class="col-sm-3">Type</dt>
-        <dd class="col-sm-9">{{ demande.typeConge.libelle }}</dd>
-
-        <dt class="col-sm-3">Période</dt>
-        <dd class="col-sm-9">{{ demande.dateDebut|date('d/m/Y') }} au {{ demande.dateFin|date('d/m/Y') }}</dd>
-
-        <dt class="col-sm-3">Description</dt>
-        <dd class="col-sm-9">{{ demande.description|default('—') }}</dd>
-
-        <dt class="col-sm-3">Approbateur</dt>
-        <dd class="col-sm-9">{{ demande.approbateur.nomComplet }}</dd>
-
-        <dt class="col-sm-3">Statut</dt>
-        <dd class="col-sm-9">{{ demande.statut.label }}</dd>
-    </dl>
-
-
-    <h2 class="mt-4">Pièces jointes</h2>
-    {% if demande.piecesJointes is empty %}
-        <p>Aucune pièce jointe.</p>
-    {% else %}
-        <ul>
-            {% for pj in demande.piecesJointes %}
-                <li>{{ pj.nomFichier }} — ajouté le {{ pj.dateAjout|date('d/m/Y') }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+    <div class="lp-dashboard-section">
+        <h2 class="lp-dashboard-subhead">Pièces jointes</h2>
+        <div class="lp-feature-card">
+            {% if demande.piecesJointes is empty %}
+                <p class="lp-empty-text">Aucune pièce jointe.</p>
+            {% else %}
+                {% for pj in demande.piecesJointes %}
+                    <div class="lp-attachment-item">
+                        <span class="lp-attachment-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 4h9l5 5v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M14 4v5h5"/></svg>
+                        </span>
+                        <div>
+                            <div class="lp-attachment-name">{{ pj.nomFichier }}</div>
+                            <div class="lp-attachment-meta">Ajouté le {{ pj.dateAjout|date('d/m/Y') }}</div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
 
     {% if is_granted('DEMANDE_ENVOYER', demande) %}
-        <form method="post" action="{{ path('demande_conge_envoyer', {id: demande.id}) }}" class="mt-3" onsubmit="return confirm('Envoyer cette demande pour approbation ?');">
+        <form method="post" action="{{ path('demande_conge_envoyer', {id: demande.id}) }}" class="lp-show-actions" onsubmit="return confirm('Envoyer cette demande pour approbation ?');">
             <input type="hidden" name="_token" value="{{ csrf_token('envoyer' ~ demande.id) }}">
-            <button type="submit" class="btn btn-success">Valider (envoyer pour approbation)</button>
+            <button type="submit" class="lp-btn lp-btn-success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4L19 6"/></svg>
+                Valider (envoyer pour approbation)
+            </button>
         </form>
     {% endif %}
-    
-    <a href="{{ path('demande_conge_index') }}">&larr; Retour à mes demandes</a>
-</div>
+
+    <a href="{{ path('demande_conge_index') }}" class="lp-see-more">&larr; Retour à mes demandes</a>
 {% endblock %}
