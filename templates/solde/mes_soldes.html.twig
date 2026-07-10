@@ -1,17 +1,46 @@
-{% extends 'base.html.twig' %}
+{% extends 'app/base.html.twig' %}
 
 {% block title %}Mes soldes de congé{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <h1>Mes soldes de congé</h1>
-    <table class="table table-striped">
-        <thead><tr><th>Type</th><th>Solde (jours)</th></tr></thead>
-        <tbody>
+    <div class="lp-page-header">
+        <h1>Mes soldes de congé</h1>
+    </div>
+
+    <div class="lp-dashboard-section">
+        <h2 class="lp-dashboard-subhead">Répartition de mon solde</h2>
+        <div class="lp-feature-card">
+            {% set totalJours = 0 %}
+            {% for solde in soldes %}{% set totalJours = totalJours + solde.solde %}{% endfor %}
+
+            {% if totalJours > 0 %}
+                <div class="lp-solde-bar">
+                    {% for solde in soldes %}
+                        {% if solde.solde > 0 %}
+                            <div style="width: {{ (solde.solde / totalJours * 100) }}%; background: hsl({{ loop.index0 * 70 }}, 45%, 40%);"></div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
             {% for solde in soldes %}
-                <tr><td>{{ solde.typeConge.libelle }}</td><td>{{ solde.solde }}</td></tr>
+                <div class="lp-solde-legend">
+                    <span><span class="lp-solde-dot" style="background: hsl({{ loop.index0 * 70 }}, 45%, 40%);"></span>{{ solde.typeConge.libelle }}</span>
+                    <strong>{{ solde.solde }} j</strong>
+                </div>
             {% endfor %}
-        </tbody>
-    </table>
-</div>
+        </div>
+    </div>
+
+    <div class="lp-dashboard-section">
+        <h2 class="lp-dashboard-subhead">Détail par type</h2>
+        <div class="lp-kpi-grid">
+            {% for solde in soldes %}
+                <div class="lp-kpi-card" style="--lp-kpi-color: hsl({{ loop.index0 * 70 }}, 45%, 40%);">
+                    <div class="lp-kpi-value">{{ solde.solde }}</div>
+                    <div class="lp-kpi-label">{{ solde.typeConge.libelle }}</div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}
