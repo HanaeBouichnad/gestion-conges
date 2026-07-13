@@ -105,7 +105,7 @@
                                     <strong>{{ demande.typeConge.libelle }}</strong>
                                     <span style="color: var(--color-muted);">— {{ demande.dateDebut|date('d/m') }} au {{ demande.dateFin|date('d/m/Y') }}</span>
                                 </div>
-                                <span class="status-badge status-{{ demande.statut.value }}">{{ demande.statut.label }}</span>
+                                <span class="status-badge status-{{ demande.statut.value }}">{{ demande.statutLabel }}</span>
                             </a>
                         {% endfor %}
                     </div>
