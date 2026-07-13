@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\SoldeConge;
+use App\Entity\TypeConge;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -22,5 +23,10 @@ class SoldeCongeRepository extends ServiceEntityRepository
             ->setParameter('employe', $employe)
             ->getQuery()
             ->getResult();
+    }
+
+    public function findOneParEmployeEtType(User $employe, TypeConge $type): ?SoldeConge
+    {
+        return $this->findOneBy(['employe' => $employe, 'typeConge' => $type]);
     }
 }

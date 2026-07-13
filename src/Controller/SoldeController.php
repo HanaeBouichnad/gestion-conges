@@ -66,7 +66,7 @@ class SoldeController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $solde = $em->getRepository(SoldeConge::class)->findOneBy(['employe' => $employe, 'typeConge' => $type]);
+        $solde = $soldeRepository->findOneParEmployeEtType($employe, $type);
         if (!$solde) {
             $solde = new SoldeConge();
             $solde->setEmploye($employe);
