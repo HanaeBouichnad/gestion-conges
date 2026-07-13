@@ -1,14 +1,26 @@
-{% extends 'base.html.twig' %}
+{% extends 'app/base.html.twig' %}
 
 {% block title %}Refuser la demande{% endblock %}
 
 {% block body %}
-<div class="container mt-4" style="max-width: 600px;">
-    <h1>Refuser la demande de {{ demande.employe.nomComplet }}</h1>
+    <div class="lp-page-header">
+        <h1>Refuser la demande de {{ demande.employe.nomComplet }}</h1>
+    </div>
 
-    {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <button type="submit" class="btn btn-danger mt-3">Confirmer le refus</button>
-    {{ form_end(form) }}
-</div>
+    <div class="lp-form-card">
+        {{ form_start(form, {attr: {class: 'lp-form'}}) }}
+            {{ form_errors(form) }}
+
+            <div class="lp-field">
+                {{ form_label(form.motifRefus) }}
+                {{ form_widget(form.motifRefus) }}
+                {{ form_errors(form.motifRefus) }}
+            </div>
+
+            <button type="submit" class="lp-btn lp-btn-danger">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m15 9-6 6M9 9l6 6"/></svg>
+                Confirmer le refus
+            </button>
+        {{ form_end(form) }}
+    </div>
 {% endblock %}

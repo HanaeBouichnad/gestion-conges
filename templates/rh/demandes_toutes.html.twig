@@ -44,7 +44,7 @@
                         <td>{{ demande.typeConge.libelle }}</td>
                         <td>{{ demande.dateDebut|date('d/m/Y') }}</td>
                         <td>{{ demande.dateFin|date('d/m/Y') }}</td>
-                        <td>{{ demande.statut.label }}</td>
+                        <td>{{ demande.statutLabel }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

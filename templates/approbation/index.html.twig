@@ -1,51 +1,55 @@
-{% extends 'base.html.twig' %}
+{% extends 'app/base.html.twig' %}
 
-{% block title %}Demandes à approuver{% endblock %}
+{% block title %}Demandes en attente d'approbation{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <h1>Demandes en attente d'approbation</h1>
+    <div class="lp-page-header">
+        <h1>Demandes en attente d'approbation</h1>
+    </div>
 
     {% for message in app.flashes('success') %}
-        <div class="alert alert-success">{{ message }}</div>
+        <div class="lp-alert lp-alert-success">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M5 12l4 4L19 6"/></svg>
+            {{ message }}
+        </div>
     {% endfor %}
     {% for message in app.flashes('error') %}
-        <div class="alert alert-danger">{{ message }}</div>
+        <div class="lp-alert lp-alert-error">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+            {{ message }}
+        </div>
     {% endfor %}
 
     {% if demandes is empty %}
-        <p>Aucune demande en attente.</p>
+        <div class="lp-list-empty">
+            <p>Aucune demande en attente.</p>
+        </div>
     {% else %}
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Employé</th>
-                    <th>Type</th>
-                    <th>Du</th>
-                    <th>Au</th>
-                    <th>Description</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for demande in demandes %}
-                    <tr>
-                        <td>{{ demande.employe.nomComplet }}</td>
-                        <td>{{ demande.typeConge.libelle }}</td>
-                        <td>{{ demande.dateDebut|date('d/m/Y') }}</td>
-                        <td>{{ demande.dateFin|date('d/m/Y') }}</td>
-                        <td>{{ demande.description|default('—') }}</td>
-                        <td>
-                            <form method="post" action="{{ path('approbation_approuver', {id: demande.id}) }}" style="display:inline" onsubmit="return confirm('Approuver cette demande ?');">
-                                <input type="hidden" name="_token" value="{{ csrf_token('approuver' ~ demande.id) }}">
-                                <button type="submit" class="btn btn-success btn-sm">Approuver</button>
-                            </form>
-                            <a href="{{ path('approbation_refuser', {id: demande.id}) }}" class="btn btn-danger btn-sm">Refuser</a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        {% for demande in demandes %}
+            <div class="lp-demande-card">
+                <div class="lp-demande-card-info">
+                    <strong>{{ demande.typeConge.libelle }}</strong>
+                    <span class="lp-demande-card-meta">{{ demande.employe.nomComplet }} — {{ demande.dateDebut|date('d/m/Y') }} au {{ demande.dateFin|date('d/m/Y') }}</span>
+                    {% if demande.description %}
+                        <span class="lp-demande-card-meta">{{ demande.description }}</span>
+                    {% endif %}
+                </div>
+                <div class="lp-demande-card-side">
+                    <div class="lp-demande-card-actions">
+                        <form method="post" action="{{ path('approbation_approuver', {id: demande.id}) }}" onsubmit="return confirm('Approuver cette demande ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('approuver' ~ demande.id) }}">
+                            <button type="submit" class="lp-btn lp-btn-success">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4L19 6"/></svg>
+                                Approuver
+                            </button>
+                        </form>
+                        <a href="{{ path('approbation_refuser', {id: demande.id}) }}" class="lp-btn lp-btn-danger">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m15 9-6 6M9 9l6 6"/></svg>
+                            Refuser
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
     {% endif %}
-</div>
 {% endblock %}

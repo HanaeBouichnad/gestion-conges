@@ -23,7 +23,6 @@
                     <th>Type</th>
                     <th>Du</th>
                     <th>Au</th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -33,14 +32,6 @@
                         <td>{{ demande.typeConge.libelle }}</td>
                         <td>{{ demande.dateDebut|date('d/m/Y') }}</td>
                         <td>{{ demande.dateFin|date('d/m/Y') }}</td>
-                        <td>
-                            {% if is_granted('DEMANDE_ANNULER', demande) %}
-                                <form method="post" action="{{ path('rh_demande_annuler', {id: demande.id}) }}" style="display:inline" onsubmit="return confirm('Annuler cette demande approuvee ?');">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('annuler' ~ demande.id) }}">
-                                    <button type="submit" class="btn btn-danger btn-sm">Annuler</button>
-                                </form>
-                            {% endif %}
-                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
