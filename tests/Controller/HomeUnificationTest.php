@@ -67,10 +67,17 @@ class HomeUnificationTest extends WebTestCase
         $user = $userRepository->findOneBy(['email' => 'admin@example.com']);
         $client->loginUser($user);
 
-        $client->request('GET', '/');
+        $crawler = $client->request('GET', '/');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('.lp-kpi-label', 'Jours fériés configurés');
+        $this->assertSelectorTextContains('.lp-dashboard-header h1', 'Bonjour Admin,');
+        $this->assertSelectorExists('.lp-dashboard-date-pill');
+        $statCards = $crawler->filter('.lp-stat-card');
+        $this->assertCount(4, $statCards);
+        $this->assertStringContainsString('Demandes en attente', $statCards->eq(0)->text());
+        $this->assertStringContainsString('Employés actifs', $statCards->eq(3)->text());
+        $this->assertSelectorTextContains('.lp-quicklink', 'Types de congés');
+        $this->assertSelectorExists('.lp-cal-day-today');
     }
 
     public function testLoginPageStillRendersSharedNavbar(): void
