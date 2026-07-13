@@ -1,30 +1,72 @@
-{% extends 'base.html.twig' %}
+{% extends 'app/base.html.twig' %}
 
 {% block title %}Types de congé{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="lp-page-header">
         <h1>Types de congé</h1>
-        <a href="{{ path('admin_type_conge_new') }}" class="btn btn-primary">Ajouter</a>
+        <a href="{{ path('admin_type_conge_new') }}" class="lp-btn lp-btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            Nouveau type
+        </a>
     </div>
 
     {% for message in app.flashes('success') %}
-        <div class="alert alert-success">{{ message }}</div>
+        <div class="lp-alert lp-alert-success">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M5 12l4 4L19 6"/></svg>
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div class="lp-alert lp-alert-error">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+            {{ message }}
+        </div>
     {% endfor %}
 
-    <table class="table table-striped">
-        <thead><tr><th>Libellé</th><th>Pièce jointe obligatoire</th><th>Actif</th><th></th></tr></thead>
-        <tbody>
-            {% for type in types %}
-                <tr>
-                    <td>{{ type.libelle }}</td>
-                    <td>{{ type.pieceJointeObligatoire ? 'Oui' : 'Non' }}</td>
-                    <td>{{ type.actif ? 'Oui' : 'Non' }}</td>
-                    <td><a href="{{ path('admin_type_conge_edit', {id: type.id}) }}">Modifier</a></td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+    {% if types is empty %}
+        <div class="lp-list-empty">
+            <p>Aucun type de congé pour le moment.</p>
+            <a href="{{ path('admin_type_conge_new') }}" class="lp-btn lp-btn-primary lp-btn-sm">+ Nouveau type</a>
+        </div>
+    {% else %}
+        <div class="lp-table-card">
+            <table class="lp-table">
+                <thead>
+                    <tr>
+                        <th>Libellé</th>
+                        <th>Pièce jointe obligatoire</th>
+                        <th>Solde max par an</th>
+                        <th>Actif</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for type in types %}
+                        <tr>
+                            <td>{{ type.libelle }}</td>
+                            <td>
+                                <span class="lp-table-badge {{ type.pieceJointeObligatoire ? 'lp-table-badge-yes' : 'lp-table-badge-no' }}">
+                                    {{ type.pieceJointeObligatoire ? 'Oui' : 'Non' }}
+                                </span>
+                            </td>
+                            <td>{{ type.soldeMax is not null ? type.soldeMax ~ ' j.' : 'Illimité' }}</td>
+                            <td>
+                                <span class="lp-table-badge {{ type.actif ? 'lp-table-badge-yes' : 'lp-table-badge-no' }}">
+                                    {{ type.actif ? 'Oui' : 'Non' }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="lp-table-actions">
+                                    <a href="{{ path('admin_type_conge_edit', {id: type.id}) }}" class="lp-icon-btn" title="Modifier">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
 {% endblock %}

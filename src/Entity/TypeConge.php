@@ -23,6 +23,10 @@ class TypeConge
     #[ORM\Column]
     private bool $actif = true;
 
+    // solde maximum de référence en jours pour ce type de congé ; null = pas de limite (ex. congé sans solde)
+    #[ORM\Column(type: 'decimal', precision: 5, scale: 1, nullable: true)]
+    private ?string $soldeMax = null;
+
     public function getId(): ?int { return $this->id; }
     public function getLibelle(): string { return $this->libelle; }
     public function setLibelle(string $libelle): static { $this->libelle = $libelle; return $this; }
@@ -30,4 +34,6 @@ class TypeConge
     public function setPieceJointeObligatoire(bool $v): static { $this->pieceJointeObligatoire = $v; return $this; }
     public function isActif(): bool { return $this->actif; }
     public function setActif(bool $actif): static { $this->actif = $actif; return $this; }
+    public function getSoldeMax(): ?float { return $this->soldeMax !== null ? (float) $this->soldeMax : null; }
+    public function setSoldeMax(?float $soldeMax): static { $this->soldeMax = $soldeMax !== null ? (string) $soldeMax : null; return $this; }
 }

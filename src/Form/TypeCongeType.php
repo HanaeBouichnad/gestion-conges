@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\TypeConge;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -16,6 +17,13 @@ class TypeCongeType extends AbstractType
         $builder
             ->add('libelle', TextType::class, ['label' => 'Libellé'])
             ->add('pieceJointeObligatoire', CheckboxType::class, ['label' => 'Pièce jointe obligatoire', 'required' => false])
+            ->add('soldeMax', NumberType::class, [
+                'label' => 'Solde max par an (jours)',
+                'required' => false,
+                'scale' => 1,
+                'html5' => true,
+                'help' => 'Laisser vide si aucune limite ne s\'applique.',
+            ])
             ->add('actif', CheckboxType::class, ['label' => 'Actif', 'required' => false]);
     }
 

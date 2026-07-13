@@ -1,13 +1,45 @@
-{% extends 'base.html.twig' %}
+{% extends 'app/base.html.twig' %}
 
 {% block title %}Ajouter un type de congé{% endblock %}
 
 {% block body %}
-<div class="container mt-4" style="max-width: 500px;">
-    <h1>Ajouter un type de congé</h1>
-    {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <button type="submit" class="btn btn-primary mt-3">Enregistrer</button>
-    {{ form_end(form) }}
-</div>
+    <div class="lp-page-header">
+        <h1>Ajouter un type de congé</h1>
+    </div>
+
+    <div class="lp-form-card">
+        {{ form_start(form, {attr: {class: 'lp-form'}}) }}
+            {{ form_errors(form) }}
+
+            <div class="lp-field">
+                {{ form_label(form.libelle) }}
+                {{ form_widget(form.libelle) }}
+                {{ form_errors(form.libelle) }}
+            </div>
+
+            <div class="lp-field">
+                {{ form_label(form.pieceJointeObligatoire) }}
+                {{ form_widget(form.pieceJointeObligatoire) }}
+                {{ form_errors(form.pieceJointeObligatoire) }}
+            </div>
+
+            <div class="lp-field">
+                {{ form_label(form.soldeMax) }}
+                {{ form_widget(form.soldeMax) }}
+                {{ form_help(form.soldeMax) }}
+                {{ form_errors(form.soldeMax) }}
+            </div>
+
+            <div class="lp-field">
+                {{ form_label(form.actif) }}
+                {{ form_widget(form.actif) }}
+                {{ form_errors(form.actif) }}
+            </div>
+
+            <button type="submit" class="lp-btn lp-btn-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4L19 6"/></svg>
+                Enregistrer
+            </button>
+        {{ form_end(form) }}
+    </div>
 {% endblock %}
