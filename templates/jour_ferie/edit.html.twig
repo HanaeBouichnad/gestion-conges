@@ -1,13 +1,38 @@
-{% extends 'base.html.twig' %}
+{% extends 'app/base.html.twig' %}
 
 {% block title %}Modifier un jour férié{% endblock %}
 
 {% block body %}
-<div class="container mt-4" style="max-width: 500px;">
-    <h1>Modifier le jour férié</h1>
-    {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <button type="submit" class="btn btn-primary mt-3">Enregistrer</button>
-    {{ form_end(form) }}
-</div>
+    <div class="lp-page-header">
+        <h1>Modifier le jour férié</h1>
+    </div>
+
+    <div class="lp-form-card">
+        {{ form_start(form, {attr: {class: 'lp-form'}}) }}
+            {{ form_errors(form) }}
+
+            <div class="lp-field">
+                {{ form_label(form.date) }}
+                {{ form_widget(form.date) }}
+                {{ form_errors(form.date) }}
+            </div>
+
+            <div class="lp-field">
+                {{ form_label(form.libelle) }}
+                {{ form_widget(form.libelle) }}
+                {{ form_errors(form.libelle) }}
+            </div>
+
+            <div class="lp-field">
+                {{ form_label(form.recurrent) }}
+                {{ form_widget(form.recurrent) }}
+                {{ form_errors(form.recurrent) }}
+            </div>
+
+            <button type="submit" class="lp-btn lp-btn-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4L19 6"/></svg>
+                Enregistrer
+            </button>
+        {{ form_end(form) }}
+    </div>
 {% endblock %}

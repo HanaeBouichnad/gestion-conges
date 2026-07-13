@@ -40,4 +40,16 @@ class JourFerieRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    /** @return JourFerie[] */
+    public function findProchains(int $limite = 5): array
+    {
+        return $this->createQueryBuilder('j')
+            ->andWhere('j.date >= :today')
+            ->setParameter('today', new \DateTimeImmutable('today'))
+            ->orderBy('j.date', 'ASC')
+            ->setMaxResults($limite)
+            ->getQuery()
+            ->getResult();
+    }
 }
