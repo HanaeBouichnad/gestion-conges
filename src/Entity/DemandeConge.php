@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\OrigineAnnulation;
 use App\Enum\PeriodeJournee;
 use App\Enum\StatutDemande;
 use App\Repository\DemandeCongeRepository;
@@ -51,6 +52,10 @@ class DemandeConge
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $motifRefus = null;
 
+    // renseigné uniquement quand statut passe à ANNULE, distingue "Annulée" (employé) de "Annulée par RH"
+    #[ORM\Column(enumType: OrigineAnnulation::class, nullable: true)]
+    private ?OrigineAnnulation $origineAnnulation = null;
+
     #[ORM\Column]
     private \DateTimeImmutable $dateCreation;
 
@@ -94,6 +99,31 @@ class DemandeConge
 
     public function getMotifRefus(): ?string { return $this->motifRefus; }
     public function setMotifRefus(?string $m): static { $this->motifRefus = $m; return $this; }
+
+    public function getOrigineAnnulation(): ?OrigineAnnulation { return $this->origineAnnulation; }
+    public function setOrigineAnnulation(?OrigineAnnulation $o): static { $this->origineAnnulation = $o; return $this; }
+
+    public function getStatutLabel(): string
+    {
+        if ($this->statut === StatutDemande::ANNULE) {
+            return $this->origineAnnulation === OrigineAnnulation::RH
+                ? OrigineAnnulation::RH->label()
+                : OrigineAnnulation::EMPLOYE->label();
+        }
+
+        return $this->statut->label();
+    }
+
+    public function getNombreJours(): float
+    {
+        $jours = $this->dateDebut->diff($this->dateFin)->days + 1;
+
+        if ($this->periode !== PeriodeJournee::JOURNEE_COMPLETE && $this->dateDebut == $this->dateFin) {
+            return 0.5;
+        }
+
+        return (float) $jours;
+    }
 
     public function getDateCreation(): \DateTimeImmutable { return $this->dateCreation; }
 

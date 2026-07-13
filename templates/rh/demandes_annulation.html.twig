@@ -1,0 +1,73 @@
+{% extends 'app/base.html.twig' %}
+
+{% block title %}Demandes d'annulation{% endblock %}
+
+{% block body %}
+    <div class="lp-page-header">
+        <h1>Demandes d'annulation</h1>
+    </div>
+
+    {% for message in app.flashes('success') %}
+        <div class="lp-alert lp-alert-success">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M5 12l4 4L19 6"/></svg>
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div class="lp-alert lp-alert-error">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% if demandesAnnulation is empty %}
+        <div class="lp-list-empty">
+            <p>Aucune demande d'annulation en attente.</p>
+        </div>
+    {% else %}
+        {% for demandeAnnulation in demandesAnnulation %}
+            {% set demande = demandeAnnulation.demandeConge %}
+            <div class="lp-feature-card" style="margin-bottom: 1rem;">
+                <div class="lp-info-grid">
+                    <div class="lp-info-item">
+                        <span class="lp-info-label">Employé</span>
+                        <span class="lp-info-value">{{ demande.employe.nomComplet }}</span>
+                    </div>
+                    <div class="lp-info-item">
+                        <span class="lp-info-label">Type de congé</span>
+                        <span class="lp-info-value">{{ demande.typeConge.libelle }}</span>
+                    </div>
+                    <div class="lp-info-item">
+                        <span class="lp-info-label">Période</span>
+                        <span class="lp-info-value">{{ demande.dateDebut|date('d/m/Y') }} au {{ demande.dateFin|date('d/m/Y') }}</span>
+                    </div>
+                    <div class="lp-info-item">
+                        <span class="lp-info-label">Demandée le</span>
+                        <span class="lp-info-value">{{ demandeAnnulation.dateCreation|date('d/m/Y') }}</span>
+                    </div>
+                    <div class="lp-info-item lp-info-item-full">
+                        <span class="lp-info-label">Motif de l'annulation</span>
+                        <span class="lp-info-value">{{ demandeAnnulation.motif }}</span>
+                    </div>
+                </div>
+
+                <div class="lp-show-actions" style="display: flex; gap: 0.75rem;">
+                    <form method="post" action="{{ path('rh_annulation_accepter', {id: demandeAnnulation.id}) }}" onsubmit="return confirm('Accepter cette demande d\'annulation ? Le solde de l\'employé sera recrédité.');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('accepter' ~ demandeAnnulation.id) }}">
+                        <button type="submit" class="lp-btn lp-btn-success">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4L19 6"/></svg>
+                            Accepter
+                        </button>
+                    </form>
+                    <form method="post" action="{{ path('rh_annulation_refuser', {id: demandeAnnulation.id}) }}" onsubmit="return confirm('Refuser cette demande d\'annulation ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('refuser' ~ demandeAnnulation.id) }}">
+                        <button type="submit" class="lp-btn lp-btn-danger">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m15 9-6 6M9 9l6 6"/></svg>
+                            Refuser
+                        </button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

@@ -100,4 +100,26 @@ class DemandeCongeRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function countParStatut(StatutDemande $statut): int
+    {
+        return (int) $this->createQueryBuilder('d')
+            ->select('COUNT(d.id)')
+            ->andWhere('d.statut = :statut')
+            ->setParameter('statut', $statut)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function countParStatutDepuis(StatutDemande $statut, \DateTimeImmutable $depuis): int
+    {
+        return (int) $this->createQueryBuilder('d')
+            ->select('COUNT(d.id)')
+            ->andWhere('d.statut = :statut')
+            ->andWhere('d.dateModification >= :depuis')
+            ->setParameter('statut', $statut)
+            ->setParameter('depuis', $depuis)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

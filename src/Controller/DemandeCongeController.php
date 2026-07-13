@@ -2,10 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\DemandeAnnulation;
 use App\Entity\DemandeConge;
 use App\Entity\User;
+use App\Enum\OrigineAnnulation;
 use App\Enum\StatutDemande;
+use App\Form\DemandeAnnulationType;
 use App\Form\DemandeCongeType;
+use App\Repository\DemandeAnnulationRepository;
 use App\Repository\DemandeCongeRepository;
 use App\Repository\UserRepository;
 use App\Security\Voter\DemandeCongeVoter;
@@ -30,6 +34,7 @@ class DemandeCongeController extends AbstractController
 
         return $this->render('demande_conge/index.html.twig', [
             'demandes' => $repository->findMesDemandes($user),
+            'formAnnulation' => $this->createForm(DemandeAnnulationType::class)->createView(),
         ]);
     }
 
@@ -86,11 +91,15 @@ class DemandeCongeController extends AbstractController
     }
 
     #[Route('/{id}', name: 'demande_conge_show', methods: ['GET'])]
-    public function show(DemandeConge $demande): Response
+    public function show(DemandeConge $demande, DemandeAnnulationRepository $demandeAnnulationRepository): Response
     {
         $this->denyAccessUnlessGranted(DemandeCongeVoter::VIEW, $demande);
 
-        return $this->render('demande_conge/show.html.twig', ['demande' => $demande]);
+        return $this->render('demande_conge/show.html.twig', [
+            'demande' => $demande,
+            'demandeAnnulation' => $demandeAnnulationRepository->findDernierePourDemande($demande),
+            'formAnnulation' => $this->createForm(DemandeAnnulationType::class)->createView(),
+        ]);
     }
 
     #[Route('/{id}/modifier', name: 'demande_conge_edit', methods: ['GET', 'POST'])]
@@ -143,18 +152,47 @@ class DemandeCongeController extends AbstractController
         return $this->redirectToRoute('demande_conge_index');
     }
 
-    #[Route('/{id}/supprimer', name: 'demande_conge_delete', methods: ['POST'])]
-    public function delete(Request $request, DemandeConge $demande, EntityManagerInterface $em): Response
+    #[Route('/{id}/annuler', name: 'demande_conge_annuler', methods: ['POST'])]
+    public function annuler(Request $request, DemandeConge $demande, EntityManagerInterface $em): Response
     {
         $this->denyAccessUnlessGranted(DemandeCongeVoter::DELETE, $demande);
 
-        if ($this->isCsrfTokenValid('supprimer'.$demande->getId(), $request->request->get('_token'))) {
-            $em->remove($demande);
+        if ($this->isCsrfTokenValid('annuler'.$demande->getId(), $request->request->get('_token'))) {
+            $demande->setStatut(StatutDemande::ANNULE);
+            $demande->setOrigineAnnulation(OrigineAnnulation::EMPLOYE);
+            $demande->setDateModification(new \DateTimeImmutable());
             $em->flush();
-            $this->addFlash('success', 'La demande de congé a été supprimée.');
+            $this->addFlash('success', 'La demande de congé a été annulée.');
         }
 
         return $this->redirectToRoute('demande_conge_index');
+    }
+
+    #[Route('/{id}/demander-annulation', name: 'demande_conge_demander_annulation', methods: ['POST'])]
+    public function demanderAnnulation(Request $request, DemandeConge $demande, EntityManagerInterface $em): Response
+    {
+        $this->denyAccessUnlessGranted(DemandeCongeVoter::DEMANDER_ANNULATION, $demande);
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $demandeAnnulation = new DemandeAnnulation();
+        $demandeAnnulation->setDemandeConge($demande);
+        $demandeAnnulation->setDemandeur($user);
+
+        $form = $this->createForm(DemandeAnnulationType::class, $demandeAnnulation);
+        $form->handleRequest($request);
+
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            $this->addFlash('error', 'Le motif de la demande d\'annulation est obligatoire.');
+            return $this->redirectToRoute('demande_conge_show', ['id' => $demande->getId()]);
+        }
+
+        $em->persist($demandeAnnulation);
+        $em->flush();
+
+        $this->addFlash('success', 'Votre demande d\'annulation a été envoyée aux RH.');
+        return $this->redirectToRoute('demande_conge_show', ['id' => $demande->getId()]);
     }
 
     /** @return User[] */

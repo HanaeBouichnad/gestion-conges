@@ -112,6 +112,12 @@
         box-shadow: 0 10px 22px -10px rgba(34,197,94,0.55);
     }
     .lp-btn-success:hover { transform: translateY(-1px); box-shadow: 0 14px 26px -8px rgba(34,197,94,0.6); color: #fff; }
+    .lp-btn-danger {
+        background: linear-gradient(135deg, #EF4444, #DC2626);
+        color: #fff;
+        box-shadow: 0 10px 22px -10px rgba(239,68,68,0.55);
+    }
+    .lp-btn-danger:hover { transform: translateY(-1px); box-shadow: 0 14px 26px -8px rgba(239,68,68,0.6); color: #fff; }
 
     /* ---- Hero ---- */
     .lp-hero { padding: 3.5rem 0 6.5rem; }
@@ -463,7 +469,96 @@
     .lp-kpi-link { display: inline-block; margin-top: 0.6rem; font-size: 0.82rem; font-weight: 600; color: #2E7DE1; text-decoration: none; }
     .lp-kpi-link:hover { text-decoration: underline; }
 
+    .lp-dashboard-date-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        background: #fff;
+        border: 1px solid #EEF2F7;
+        border-radius: 999px;
+        padding: 0.55rem 1.1rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #334155;
+        box-shadow: 0 12px 26px -18px rgba(15,23,42,0.2);
+        white-space: nowrap;
+    }
+    .lp-dashboard-date-pill svg { width: 16px; height: 16px; color: #2E7DE1; flex-shrink: 0; }
+    .lp-dashboard-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; }
+
+    .lp-stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; margin-bottom: 2rem; }
+    .lp-stat-card {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        background: #fff;
+        border: 1px solid #EEF2F7;
+        border-radius: 18px;
+        padding: 1.3rem 1.4rem;
+        box-shadow: 0 16px 34px -22px rgba(15,23,42,0.15);
+    }
+    .lp-stat-icon {
+        flex-shrink: 0;
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .lp-stat-icon svg { width: 22px; height: 22px; }
+    .lp-stat-label { font-size: 0.82rem; color: #64748B; margin-bottom: 0.25rem; }
+    .lp-stat-value { font-size: 1.7rem; font-weight: 800; line-height: 1; }
+    .lp-stat-sub { font-size: 0.78rem; color: #94A3B8; margin-top: 0.2rem; }
+
+    .lp-quicklinks-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    .lp-quicklink {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        border: 1px solid #EEF2F7;
+        border-radius: 14px;
+        padding: 0.9rem 1.1rem;
+        text-decoration: none;
+        color: #0F172A;
+        transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+    }
+    .lp-quicklink:hover { transform: translateY(-2px); box-shadow: 0 14px 28px -16px rgba(15,23,42,0.2); border-color: #CBD5E1; color: #0F172A; }
+    .lp-quicklink-icon {
+        flex-shrink: 0;
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .lp-quicklink-icon svg { width: 18px; height: 18px; }
+    .lp-quicklink span { font-size: 0.88rem; font-weight: 600; }
+    .lp-quicklink-chevron { margin-left: auto; width: 16px; height: 16px; color: #94A3B8; flex-shrink: 0; }
+
     .lp-dashboard-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.6rem; align-items: start; }
+
+    .lp-upcoming-list { display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 1rem; }
+    .lp-upcoming-item { display: flex; align-items: center; gap: 0.9rem; }
+    .lp-upcoming-date-badge {
+        flex-shrink: 0;
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+        background: #E9F1FD;
+        color: #2E7DE1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        line-height: 1.1;
+    }
+    .lp-upcoming-date-badge strong { font-size: 1rem; font-weight: 800; }
+    .lp-upcoming-date-badge span { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; }
+    .lp-upcoming-body strong { display: block; font-size: 0.92rem; }
+    .lp-upcoming-body span { font-size: 0.8rem; color: #64748B; }
+    .lp-legend-swatch-aujourdhui { background: #2E7DE1; }
 
     .lp-list-item {
         display: flex;
@@ -507,6 +602,51 @@
     }
     .lp-list-empty p { margin: 0 0 0.9rem; }
 
+    /* ---- Tableau (listes admin : types de congé, jours fériés, ...) ---- */
+    .lp-table-card {
+        background: #fff;
+        border: 1px solid #EEF2F7;
+        border-radius: 18px;
+        box-shadow: 0 16px 34px -22px rgba(15,23,42,0.15);
+        max-height: calc(100vh - 260px);
+        overflow-y: auto;
+        overflow-x: auto;
+        scrollbar-width: thin;
+        scrollbar-color: #CBD5E1 transparent;
+    }
+    .lp-table-card::-webkit-scrollbar { width: 6px; }
+    .lp-table-card::-webkit-scrollbar-track { background: transparent; }
+    .lp-table-card::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 999px; }
+    .lp-table-card::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+    .lp-table { width: 100%; border-collapse: collapse; }
+    .lp-table th, .lp-table td { padding: 0.9rem 1.3rem; text-align: left; font-size: 0.9rem; white-space: nowrap; }
+    .lp-table th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background: #F4F7FB;
+        font-size: 0.76rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        color: #64748B;
+        border-bottom: 1px solid #E2E8F0;
+    }
+    .lp-table tbody tr:not(:last-child) td { border-bottom: 1px solid #EEF2F7; }
+    .lp-table tbody tr:hover { background: #FAFBFD; }
+    .lp-table th:last-child, .lp-table td:last-child { text-align: right; }
+    .lp-table-actions { display: inline-flex; align-items: center; gap: 0.5rem; }
+    .lp-table-badge {
+        display: inline-block;
+        padding: 0.2rem 0.6rem;
+        border-radius: 999px;
+        font-size: 0.76rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+    .lp-table-badge-yes { background: rgba(34,197,94,0.15); color: #22C55E; }
+    .lp-table-badge-no { background: rgba(148,163,184,0.15); color: #64748B; }
+
     .lp-see-more { display: inline-block; margin-top: 0.4rem; font-size: 0.88rem; font-weight: 600; color: #2E7DE1; text-decoration: none; }
     .lp-see-more:hover { text-decoration: underline; }
 
@@ -522,7 +662,7 @@
     .status-badge.status-en_attente { background: rgba(245,158,11,0.15); color: #F59E0B; }
     .status-badge.status-approuve { background: rgba(34,197,94,0.15); color: #22C55E; }
     .status-badge.status-refuse { background: rgba(239,68,68,0.15); color: #EF4444; }
-    .status-badge.status-annule { background: rgba(100,116,139,0.15); color: #64748B; }
+    .status-badge.status-annule { background: rgba(139,92,246,0.15); color: #8B5CF6; }
 
     .lp-solde-bar { display: flex; border-radius: 999px; overflow: hidden; height: 14px; margin-bottom: 1rem; }
     .lp-solde-legend { display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem; margin-bottom: 0.5rem; }
@@ -822,6 +962,8 @@
         .lp-hero-intro { max-width: 100%; }
         .lp-nav-links { display: none; }
         .lp-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+        .lp-stat-grid { grid-template-columns: repeat(2, 1fr); }
+        .lp-quicklinks-grid { grid-template-columns: repeat(2, 1fr); }
         .lp-dashboard-grid { grid-template-columns: 1fr; }
         .lp-dash-cards { grid-template-columns: 1fr; }
         .lp-dash-card-wide { flex-direction: column; align-items: flex-start; }
@@ -838,6 +980,8 @@
         .lp-hero-ctas { flex-direction: column; align-items: stretch; }
         .lp-nav-actions { justify-content: center; }
         .lp-kpi-grid { grid-template-columns: 1fr; }
+        .lp-stat-grid { grid-template-columns: 1fr; }
+        .lp-quicklinks-grid { grid-template-columns: 1fr; }
         .lp-list-item { flex-wrap: wrap; }
         .lp-list-date { display: none; }
         .lp-cal-week { column-gap: 0.2rem; grid-template-rows: 20px; grid-auto-rows: 20px; min-height: 64px; }
