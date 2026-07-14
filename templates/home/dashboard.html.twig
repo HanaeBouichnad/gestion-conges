@@ -238,63 +238,6 @@
                     </a>
                 {% endif %}
             </div>
-
-            <div class="lp-dashboard-section">
-                <div class="lp-dashboard-section-head">
-                    <h2 class="lp-dashboard-subhead">Mes dernières demandes</h2>
-                    <a href="{{ path('demande_conge_index') }}" class="lp-see-more">Voir toutes &rarr;</a>
-                </div>
-                {% if mesDemandesRecentes is empty %}
-                    <div class="lp-list-empty">
-                        <p>Aucune demande pour le moment.</p>
-                        <a href="{{ path('demande_conge_new') }}" class="lp-btn lp-btn-primary lp-btn-sm">+ Nouvelle demande</a>
-                    </div>
-                {% else %}
-                    {% for demande in mesDemandesRecentes %}
-                        <a href="{{ path('demande_conge_show', {id: demande.id}) }}" class="lp-list-item">
-                            <span class="lp-list-status-icon {{ demande.statut.value == 'approuve' ? 'is-approved' : '' }}">
-                                {% if demande.statut.value == 'approuve' %}
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4L19 6"/></svg>
-                                {% else %}
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg>
-                                {% endif %}
-                            </span>
-                            <div class="lp-list-item-body">
-                                <strong>{{ demande.typeConge.libelle }}</strong>
-                                <span class="lp-list-meta">{{ demande.dateDebut|date('d/m') }} au {{ demande.dateFin|date('d/m/Y') }}</span>
-                            </div>
-                            <span class="status-badge status-{{ demande.statut.value }}">{{ demande.statutLabel }}</span>
-                            <span class="lp-list-meta lp-list-date">{{ (demande.dateModification ?? demande.dateCreation)|date('d/m/Y') }}</span>
-                            <svg class="lp-list-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
-                        </a>
-                    {% endfor %}
-                {% endif %}
-            </div>
-
-            <div class="lp-dashboard-section">
-                <h2 class="lp-dashboard-subhead">Répartition de mon solde</h2>
-                <div class="lp-feature-card">
-                    {% set totalJours = 0 %}
-                    {% for s in mesSoldes %}{% set totalJours = totalJours + s.solde %}{% endfor %}
-
-                    {% if totalJours > 0 %}
-                        <div class="lp-solde-bar">
-                            {% for s in mesSoldes %}
-                                {% if s.solde > 0 %}
-                                    <div style="width: {{ (s.solde / totalJours * 100) }}%; background: hsl({{ loop.index0 * 70 }}, 45%, 40%);"></div>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-
-                    {% for s in mesSoldes %}
-                        <div class="lp-solde-legend">
-                            <span><span class="lp-solde-dot" style="background: hsl({{ loop.index0 * 70 }}, 45%, 40%);"></span>{{ s.typeConge.libelle }}</span>
-                            <strong>{{ s.solde }} j</strong>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
         {% endif %}
     </div>
 </main>
