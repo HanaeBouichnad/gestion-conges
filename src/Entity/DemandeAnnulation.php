@@ -14,7 +14,7 @@ class DemandeAnnulation
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: DemandeConge::class)]
+    #[ORM\ManyToOne(targetEntity: DemandeConge::class, inversedBy: 'demandesAnnulation')]
     #[ORM\JoinColumn(nullable: false)]
     private DemandeConge $demandeConge;
 

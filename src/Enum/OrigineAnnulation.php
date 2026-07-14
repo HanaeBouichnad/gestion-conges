@@ -10,8 +10,8 @@ enum OrigineAnnulation: string
     public function label(): string
     {
         return match ($this) {
-            self::EMPLOYE => 'Annulée',
-            self::RH => 'Annulée par RH',
+            self::EMPLOYE => 'Annulé',
+            self::RH => 'Annulé par RH',
         };
     }
 }

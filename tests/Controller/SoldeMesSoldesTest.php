@@ -20,9 +20,9 @@ class SoldeMesSoldesTest extends WebTestCase
         $this->assertSelectorExists('.lp-navbar');
         $this->assertSelectorTextContains('.lp-nav-link-active', 'Solde');
         $this->assertSelectorTextContains('.lp-page-header h1', 'Mes soldes de congé');
-        $this->assertSelectorExists('.lp-solde-bar');
-        $this->assertSelectorExists('.lp-solde-legend');
-        $this->assertSelectorExists('.lp-kpi-card');
+        $this->assertSelectorNotExists('.lp-solde-bar');
+        $this->assertSelectorNotExists('.lp-solde-legend');
+        $this->assertSelectorExists('.lp-type-card');
         $this->assertSelectorNotExists('table.table');
     }
 }

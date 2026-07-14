@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Enum\OrigineAnnulation;
 use App\Enum\PeriodeJournee;
 use App\Enum\StatutDemande;
+use App\Enum\StatutDemandeAnnulation;
 use App\Repository\DemandeCongeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -52,7 +53,7 @@ class DemandeConge
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $motifRefus = null;
 
-    // renseigné uniquement quand statut passe à ANNULE, distingue "Annulée" (employé) de "Annulée par RH"
+    // renseigné uniquement quand statut passe à ANNULE, distingue "Annulé" (employé) de "Annulé par RH"
     #[ORM\Column(enumType: OrigineAnnulation::class, nullable: true)]
     private ?OrigineAnnulation $origineAnnulation = null;
 
@@ -65,10 +66,14 @@ class DemandeConge
     #[ORM\OneToMany(mappedBy: 'demandeConge', targetEntity: PieceJointe::class, cascade: ['persist', 'remove'])]
     private Collection $piecesJointes;
 
+    #[ORM\OneToMany(mappedBy: 'demandeConge', targetEntity: DemandeAnnulation::class)]
+    private Collection $demandesAnnulation;
+
     public function __construct()
     {
         $this->dateCreation = new \DateTimeImmutable();
         $this->piecesJointes = new ArrayCollection();
+        $this->demandesAnnulation = new ArrayCollection();
     }
 
     public function getId(): ?int { return $this->id; }
@@ -111,7 +116,25 @@ class DemandeConge
                 : OrigineAnnulation::EMPLOYE->label();
         }
 
+        if ($this->statut === StatutDemande::APPROUVE && $this->hasAnnulationEnAttente()) {
+            return "En attente d'annulation";
+        }
+
         return $this->statut->label();
+    }
+
+    // le statut réel reste APPROUVE tant que les RH n'ont pas tranché (RG-25 : la demande de
+    // congé demeure active/occupe le calendrier pendant l'instruction de la demande d'annulation) ;
+    // seul le libellé affiché change pour refléter l'annulation en cours.
+    public function hasAnnulationEnAttente(): bool
+    {
+        foreach ($this->demandesAnnulation as $demandeAnnulation) {
+            if ($demandeAnnulation->getStatut() === StatutDemandeAnnulation::EN_ATTENTE) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function getNombreJours(): float
