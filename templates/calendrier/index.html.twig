@@ -7,8 +7,7 @@
 
     <div class="lp-page-header">
         <div>
-            <h1>Calendrier</h1>
-            <p class="lp-page-subtitle">Consultez vos congés et planifiez vos demandes.</p>
+            <h1>Calendrier des congés</h1>
         </div>
         <div class="lp-month-nav">
             <a href="{{ path('calendrier_index', {mois: moisPrecedent.format('n'), annee: moisPrecedent.format('Y')}) }}" class="lp-icon-btn" title="Mois précédent">
@@ -32,8 +31,7 @@
                 <div class="lp-cal-week">
                     {% for jour in semaine %}
                         <div class="lp-cal-day {{ jour.dansMoisCourant ? '' : 'lp-cal-day-muted' }}" style="grid-column: {{ loop.index }}; grid-row: 1 / -1;">
-                            <span class="lp-cal-day-number {{ jour.estAujourdhui ? 'lp-cal-day-today' : '' }}">{{ jour.jour }}</span>
-                            {% if jour.estFerie %}<span class="lp-cal-day-ferie-dot" title="{{ jour.libelleFerie }}"></span>{% endif %}
+                            <span class="lp-cal-day-number {{ jour.estAujourdhui ? 'lp-cal-day-today' : (jour.estFerie ? 'lp-cal-day-ferie' : '') }}" title="{{ jour.estFerie ? jour.libelleFerie }}">{{ jour.jour }}</span>
                         </div>
                     {% endfor %}
 
@@ -44,7 +42,6 @@
                             title="{{ segment.typeLibelle }} — {{ segment.statutLabel }}"
                         >
                             <strong>{{ segment.typeLibelle }}</strong>
-                            <span>{{ segment.statutLabel }}</span>
                         </div>
                     {% endfor %}
                 </div>
@@ -52,10 +49,8 @@
         </div>
 
         <div class="lp-cal-legend">
-            <span class="lp-legend-item"><span class="lp-legend-swatch lp-legend-swatch-brouillon"></span>Brouillon</span>
-            <span class="lp-legend-item"><span class="lp-legend-swatch lp-legend-swatch-en_attente"></span>En attente</span>
-            <span class="lp-legend-item"><span class="lp-legend-swatch lp-legend-swatch-approuve"></span>Approuvé</span>
-            <span class="lp-legend-item"><span class="lp-legend-swatch lp-legend-swatch-refuse"></span>Refusé</span>
+            <span class="lp-legend-item"><span class="lp-legend-swatch lp-legend-swatch-aujourdhui"></span>Aujourd'hui</span>
+            <span class="lp-legend-item"><span class="lp-legend-swatch lp-legend-swatch-approuve"></span>Congé approuvé</span>
             <span class="lp-legend-item"><span class="lp-legend-swatch lp-legend-swatch-ferie"></span>Jour férié</span>
         </div>
     </div>

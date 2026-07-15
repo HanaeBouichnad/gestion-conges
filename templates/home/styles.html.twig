@@ -979,6 +979,7 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        box-sizing: border-box;
         width: 22px;
         height: 22px;
         border-radius: 50%;
@@ -986,16 +987,12 @@
         font-weight: 600;
         color: #0F172A;
     }
-    .lp-cal-day-number.lp-cal-day-today { background: #2E7DE1; color: #fff; }
-    .lp-cal-day-ferie-dot {
-        position: absolute;
-        top: 2px;
-        right: 2px;
-        width: 5px;
-        height: 5px;
-        border-radius: 50%;
-        background: #EF4444;
+    .lp-cal-day-number.lp-cal-day-today,
+    .lp-cal-day-number.lp-cal-day-ferie {
+        color: #fff;
     }
+    .lp-cal-day-number.lp-cal-day-today { background: #2E7DE1; }
+    .lp-cal-day-number.lp-cal-day-ferie { background: #EF4444; }
 
     .lp-cal-bar {
         border-radius: 6px;
