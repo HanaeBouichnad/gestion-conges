@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\DemandeConge;
 use App\Entity\User;
+use App\Enum\StatutDemande;
 use App\Repository\DemandeCongeRepository;
 use App\Repository\JourFerieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,7 +32,8 @@ class CalendrierController extends AbstractController
         $debut = new \DateTimeImmutable(sprintf('%d-%02d-01', $annee, $mois));
         $fin = $debut->modify('last day of this month');
 
-        $mesAbsences = $demandeRepository->findMesAbsencesDuMois($user, $debut, $fin);
+        // RG : le calendrier n'affiche que les congés approuvés et les jours fériés.
+        $mesAbsences = $demandeRepository->findMesAbsencesDuMois($user, $debut, $fin, [StatutDemande::APPROUVE]);
 
         $joursFeries = $jourFerieRepository->createQueryBuilder('j')
             ->andWhere('j.date BETWEEN :debut AND :fin')

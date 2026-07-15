@@ -39,15 +39,18 @@ class DemandeCongeRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /** @return DemandeConge[] */
-    public function findMesAbsencesDuMois(User $employe, \DateTimeImmutable $debut, \DateTimeImmutable $fin): array
+    /**
+     * @param StatutDemande[]|null $statuts Statuts à inclure (par défaut : tous)
+     * @return DemandeConge[]
+     */
+    public function findMesAbsencesDuMois(User $employe, \DateTimeImmutable $debut, \DateTimeImmutable $fin, ?array $statuts = null): array
     {
         return $this->createQueryBuilder('d')
             ->andWhere('d.employe = :employe')
             ->andWhere('d.statut IN (:statuts)')
             ->andWhere('d.dateDebut <= :fin AND d.dateFin >= :debut')
             ->setParameter('employe', $employe)
-            ->setParameter('statuts', [
+            ->setParameter('statuts', $statuts ?? [
                 StatutDemande::BROUILLON,
                 StatutDemande::EN_ATTENTE,
                 StatutDemande::APPROUVE,

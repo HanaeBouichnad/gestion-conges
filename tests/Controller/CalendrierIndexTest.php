@@ -26,7 +26,8 @@ class CalendrierIndexTest extends WebTestCase
         $this->assertSelectorTextContains('.lp-page-subtitle', 'Consultez vos congés');
         $this->assertSelectorExists('.lp-cal-week');
         $this->assertSelectorExists('.lp-cal-legend');
-        $this->assertCount(5, $crawler->filter('.lp-legend-item'));
+        $this->assertCount(3, $crawler->filter('.lp-legend-item'));
+        $this->assertSelectorTextContains('.lp-legend-item:first-child', "Aujourd'hui");
         $this->assertSelectorTextContains('.lp-legend-item:last-child', 'Jour férié');
         $this->assertSelectorNotExists('ul.list-group');
         $this->assertSelectorNotExists('.lp-calendar-legend');
@@ -102,14 +103,14 @@ class CalendrierIndexTest extends WebTestCase
             $approuvee->setStatut(StatutDemande::APPROUVE);
             $em->persist($approuvee);
 
-            $enAttente = new DemandeConge();
-            $enAttente->setEmploye($employe);
-            $enAttente->setTypeConge($typeMaladie);
-            $enAttente->setApprobateur($approbateur);
-            $enAttente->setDateDebut(new \DateTimeImmutable('2026-04-07'));
-            $enAttente->setDateFin(new \DateTimeImmutable('2026-04-09'));
-            $enAttente->setStatut(StatutDemande::EN_ATTENTE);
-            $em->persist($enAttente);
+            $approuveeChevauchante = new DemandeConge();
+            $approuveeChevauchante->setEmploye($employe);
+            $approuveeChevauchante->setTypeConge($typeMaladie);
+            $approuveeChevauchante->setApprobateur($approbateur);
+            $approuveeChevauchante->setDateDebut(new \DateTimeImmutable('2026-04-07'));
+            $approuveeChevauchante->setDateFin(new \DateTimeImmutable('2026-04-09'));
+            $approuveeChevauchante->setStatut(StatutDemande::APPROUVE);
+            $em->persist($approuveeChevauchante);
 
             $em->flush();
 
@@ -119,12 +120,63 @@ class CalendrierIndexTest extends WebTestCase
             $this->assertResponseIsSuccessful();
             $bars = $crawler->filter('.lp-cal-bar');
             $this->assertCount(2, $bars);
-            $this->assertSelectorExists('.lp-cal-bar-approuve');
-            $this->assertSelectorExists('.lp-cal-bar-en_attente');
+            $this->assertCount(2, $crawler->filter('.lp-cal-bar-approuve'));
 
             // Overlapping dates (6-8 and 7-9 April) must be assigned to different lanes (grid-row).
             $rows = $bars->each(fn ($node) => preg_match('/grid-row:\s*(\d+)/', $node->attr('style'), $m) ? $m[1] : null);
             $this->assertNotSame($rows[0], $rows[1]);
+        } finally {
+            $connection->rollBack();
+        }
+    }
+
+    public function testCalendarOnlyShowsApprovedRequestsRegardlessOfRole(): void
+    {
+        $client = static::createClient();
+        $container = static::getContainer();
+        $userRepository = $container->get(UserRepository::class);
+        /** @var EntityManagerInterface $em */
+        $em = $container->get(EntityManagerInterface::class);
+
+        $connection = $em->getConnection();
+        $connection->beginTransaction();
+
+        try {
+            $rh = $userRepository->findOneBy(['email' => 'rh@example.com']);
+            $approbateur = $userRepository->findOneBy(['email' => 'responsable@example.com']);
+            $typeAnnuel = $em->getRepository(TypeConge::class)->findOneBy(['libelle' => 'Congé annuel']);
+
+            $approuvee = new DemandeConge();
+            $approuvee->setEmploye($rh);
+            $approuvee->setTypeConge($typeAnnuel);
+            $approuvee->setApprobateur($approbateur);
+            $approuvee->setDateDebut(new \DateTimeImmutable('2026-04-06'));
+            $approuvee->setDateFin(new \DateTimeImmutable('2026-04-08'));
+            $approuvee->setStatut(StatutDemande::APPROUVE);
+            $em->persist($approuvee);
+
+            $enAttente = new DemandeConge();
+            $enAttente->setEmploye($rh);
+            $enAttente->setTypeConge($typeAnnuel);
+            $enAttente->setApprobateur($approbateur);
+            $enAttente->setDateDebut(new \DateTimeImmutable('2026-04-14'));
+            $enAttente->setDateFin(new \DateTimeImmutable('2026-04-16'));
+            $enAttente->setStatut(StatutDemande::EN_ATTENTE);
+            $em->persist($enAttente);
+
+            $em->flush();
+
+            $client->loginUser($rh);
+            $crawler = $client->request('GET', '/calendrier?mois=4&annee=2026');
+
+            $this->assertResponseIsSuccessful();
+            $bars = $crawler->filter('.lp-cal-bar');
+            $this->assertCount(1, $bars);
+            $this->assertSelectorExists('.lp-cal-bar-approuve');
+            $this->assertSelectorNotExists('.lp-cal-bar-en_attente');
+
+            // Legend only ever shows "Aujourd'hui", "Congé approuvé" and "Jour férié".
+            $this->assertCount(3, $crawler->filter('.lp-legend-item'));
         } finally {
             $connection->rollBack();
         }
