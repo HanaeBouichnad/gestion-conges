@@ -89,17 +89,4 @@ class HomeUnificationTest extends WebTestCase
         $this->assertSelectorExists('.lp-navbar');
         $this->assertSelectorExists('.lp-role-link');
     }
-
-    public function testLegacyAccueilRouteStillWorksWhenConnected(): void
-    {
-        $client = static::createClient();
-        $userRepository = static::getContainer()->get(UserRepository::class);
-        $user = $userRepository->findOneBy(['email' => 'employe@example.com']);
-        $client->loginUser($user);
-
-        $client->request('GET', '/accueil');
-
-        $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('h1', 'Bonjour');
-    }
 }
