@@ -19,7 +19,7 @@ class TypeCongeController extends AbstractController
     #[Route('', name: 'admin_type_conge_index', methods: ['GET'])]
     public function index(TypeCongeRepository $repository): Response
     {
-        return $this->render('type_conge/index.html.twig', [
+        return $this->render('admin/types_conge/index.html.twig', [
             'types' => $repository->findBy([], ['libelle' => 'ASC']),
         ]);
     }
@@ -38,7 +38,7 @@ class TypeCongeController extends AbstractController
             return $this->redirectToRoute('admin_type_conge_index');
         }
 
-        return $this->render('type_conge/new.html.twig', ['form' => $form]);
+        return $this->render('admin/types_conge/new.html.twig', ['form' => $form]);
     }
 
     #[Route('/{id}/modifier', name: 'admin_type_conge_edit', methods: ['GET', 'POST'])]
@@ -53,6 +53,6 @@ class TypeCongeController extends AbstractController
             return $this->redirectToRoute('admin_type_conge_index');
         }
 
-        return $this->render('type_conge/edit.html.twig', ['form' => $form, 'typeConge' => $typeConge]);
+        return $this->render('admin/types_conge/edit.html.twig', ['form' => $form, 'typeConge' => $typeConge]);
     }
 }

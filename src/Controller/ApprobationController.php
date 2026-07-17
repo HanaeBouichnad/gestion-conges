@@ -25,7 +25,7 @@ class ApprobationController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        return $this->render('approbation/index.html.twig', [
+        return $this->render('rh/demandes_approbation/index.html.twig', [
             'demandes' => $repository->findAValiderPar($user),
         ]);
     }
@@ -65,7 +65,7 @@ class ApprobationController extends AbstractController
             return $this->redirectToRoute('approbation_index');
         }
 
-        return $this->render('approbation/refuser.html.twig', [
+        return $this->render('rh/demandes_approbation/refuser.html.twig', [
             'form' => $form,
             'demande' => $demande,
         ]);

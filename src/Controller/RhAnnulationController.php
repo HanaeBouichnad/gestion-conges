@@ -25,7 +25,7 @@ class RhAnnulationController extends AbstractController
     #[Route('', name: 'rh_annulation_index', methods: ['GET'])]
     public function index(DemandeAnnulationRepository $repository): Response
     {
-        return $this->render('rh/demandes_annulation.html.twig', [
+        return $this->render('rh/demandes_annulation/index.html.twig', [
             'demandesAnnulation' => $repository->findEnAttente(),
         ]);
     }

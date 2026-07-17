@@ -83,7 +83,7 @@ class CalendrierController extends AbstractController
             );
         }
 
-        return $this->render('calendrier/index.html.twig', [
+        return $this->render('shared/calendrier/index.html.twig', [
             'mois' => $mois,
             'annee' => $annee,
             'moisPrecedent' => $debut->modify('-1 month'),

@@ -19,7 +19,7 @@ class JourFerieController extends AbstractController
     #[Route('', name: 'admin_jour_ferie_index', methods: ['GET'])]
     public function index(JourFerieRepository $repository): Response
     {
-        return $this->render('jour_ferie/index.html.twig', [
+        return $this->render('admin/jours_feries/index.html.twig', [
             'joursFeries' => $repository->findBy([], ['date' => 'ASC']),
         ]);
     }
@@ -38,7 +38,7 @@ class JourFerieController extends AbstractController
             return $this->redirectToRoute('admin_jour_ferie_index');
         }
 
-        return $this->render('jour_ferie/new.html.twig', ['form' => $form]);
+        return $this->render('admin/jours_feries/new.html.twig', ['form' => $form]);
     }
 
     #[Route('/{id}/modifier', name: 'admin_jour_ferie_edit', methods: ['GET', 'POST'])]
@@ -53,7 +53,7 @@ class JourFerieController extends AbstractController
             return $this->redirectToRoute('admin_jour_ferie_index');
         }
 
-        return $this->render('jour_ferie/edit.html.twig', ['form' => $form, 'jourFerie' => $jourFerie]);
+        return $this->render('admin/jours_feries/edit.html.twig', ['form' => $form, 'jourFerie' => $jourFerie]);
     }
 
     #[Route('/{id}/supprimer', name: 'admin_jour_ferie_delete', methods: ['POST'])]

@@ -25,7 +25,7 @@ class SoldeController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        return $this->render('solde/mes_soldes.html.twig', [
+        return $this->render('shared/solde/mes_soldes.html.twig', [
             'soldes' => $repository->findParEmploye($user),
         ]);
     }
@@ -34,7 +34,7 @@ class SoldeController extends AbstractController
     #[IsGranted('ROLE_RH')]
     public function index(UserRepository $userRepository): Response
     {
-        return $this->render('solde/rh_index.html.twig', [
+        return $this->render('rh/rh_index.html.twig', [
             'employes' => $userRepository->findAll(),
         ]);
     }
@@ -43,7 +43,7 @@ class SoldeController extends AbstractController
     #[IsGranted('ROLE_RH')]
     public function soldeEmploye(User $id, SoldeCongeRepository $repository): Response
     {
-        return $this->render('solde/rh_employe.html.twig', [
+        return $this->render('rh/rh_employe.html.twig', [
             'employe' => $id,
             'soldes' => $repository->findParEmploye($id),
         ]);
@@ -100,7 +100,7 @@ class SoldeController extends AbstractController
             return $this->redirectToRoute('rh_solde_employe', ['id' => $employe->getId()]);
         }
 
-        return $this->render('solde/modifier.html.twig', [
+        return $this->render('rh/modifier.html.twig', [
             'form' => $form,
             'employe' => $employe,
             'type' => $type,
