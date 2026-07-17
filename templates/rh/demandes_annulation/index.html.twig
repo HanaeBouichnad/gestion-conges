@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class="lp-page-header">
-        <h1>Demandes d'annulation</h1>
+        <h1>Demandes en attente d'annulation</h1>
     </div>
 
     {% for message in app.flashes('success') %}
@@ -22,7 +22,7 @@
 
     {% if demandesAnnulation is empty %}
         <div class="lp-list-empty">
-            <p>Aucune demande d'annulation en attente.</p>
+            <p>Aucune demande en attente d'annulation.</p>
         </div>
     {% else %}
         {% for demandeAnnulation in demandesAnnulation %}
