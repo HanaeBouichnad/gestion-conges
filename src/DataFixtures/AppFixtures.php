@@ -17,11 +17,11 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         // --- Types de congés (RG-08/RG-09) ---
-        $typeAnnuel = $this->creerType($manager, 'Congé annuel', false);
-        $typeMaladie = $this->creerType($manager, 'Congé maladie', true); // pièce jointe obligatoire (réponse #3)
-        $typeSansSolde = $this->creerType($manager, 'Congé sans solde', false);
-        $typeRecup = $this->creerType($manager, 'Récupération', false);
-        $typeExceptionnel = $this->creerType($manager, 'Congé exceptionnel', false);
+        $typeAnnuel = $this->creerType($manager, 'Congé annuel', 'Congé payé accordé chaque année civile.', false);
+        $typeMaladie = $this->creerType($manager, 'Congé maladie', 'Congé accordé en cas de maladie, sur présentation d\'un justificatif médical.', true); // pièce jointe obligatoire (réponse #3)
+        $typeSansSolde = $this->creerType($manager, 'Congé sans solde', 'Congé non rémunéré, accordé sans limite de solde.', false);
+        $typeRecup = $this->creerType($manager, 'Récupération', 'Jours accordés en compensation d\'heures ou de jours supplémentaires travaillés.', false);
+        $typeExceptionnel = $this->creerType($manager, 'Congé exceptionnel', 'Congé accordé pour un événement familial ou personnel exceptionnel.', false);
 
         $feries = [
             ['2026-01-01', 'Nouvel An'],
@@ -43,10 +43,13 @@ class AppFixtures extends Fixture
         }
 
         // --- Utilisateurs de test (un par rôle, hiérarchie RG-07/RG-14) ---
-        $admin = $this->creerUser($manager, 'admin@example.com', 'Admin', 'Système', ['ROLE_ADMIN'], null);
-        $responsable = $this->creerUser($manager, 'responsable@example.com', 'Resp', 'Responsable', ['ROLE_RESPONSABLE'], $rh);
-        $rh = $this->creerUser($manager, 'rh@example.com', 'Ressh', 'RH', ['ROLE_RH'], $responsable);
-        $employe = $this->creerUser($manager, 'employe@example.com', 'Emp', 'Employée', ['ROLE_EMPLOYE'], $responsable);
+        $admin = $this->creerUser($manager, 'admin@example.com', 'Admin', 'Test', ['ROLE_ADMIN'], null);
+        $rh = $this->creerUser($manager, 'rh@example.com', 'Ressh', 'RH', ['ROLE_RH'], null);
+        $responsable = $this->creerUser($manager, 'responsable@example.com', 'Resp', 'Manager', ['ROLE_RESPONSABLE'], $rh);
+        $employe = $this->creerUser($manager, 'employe@example.com', 'Emp', 'Test', ['ROLE_EMPLOYE'], $responsable);
+
+        // Lien circulaire : RH approuve Responsable, Responsable approuve RH
+        $rh->setResponsable($responsable);
 
         $manager->flush();
 
@@ -64,10 +67,11 @@ class AppFixtures extends Fixture
         $manager->flush();
     }
 
-    private function creerType(ObjectManager $manager, string $libelle, bool $pjObligatoire): TypeConge
+    private function creerType(ObjectManager $manager, string $libelle, string $description, bool $pjObligatoire): TypeConge
     {
         $type = new TypeConge();
         $type->setLibelle($libelle);
+        $type->setDescription($description);
         $type->setPieceJointeObligatoire($pjObligatoire);
         $type->setActif(true);
         $manager->persist($type);
