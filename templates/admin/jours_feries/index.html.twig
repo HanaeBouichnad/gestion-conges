@@ -4,10 +4,13 @@
 
 {% block body %}
     <div class="lp-page-header">
-        <h1>Jours fériés</h1>
+        <div>
+            <h1>Jours fériés</h1>
+            <p class="lp-page-subtitle">Gérez les différents jours fériés</p>
+        </div>
         <a href="{{ path('admin_jour_ferie_new') }}" class="lp-btn lp-btn-primary">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-            Nouveau jour férié
+            Ajouter un jour férié
         </a>
     </div>
 

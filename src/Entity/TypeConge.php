@@ -16,6 +16,9 @@ class TypeConge
     #[ORM\Column(length: 100)]
     private string $libelle;
 
+    #[ORM\Column(type: 'text')]
+    private string $description = '';
+
     // RG-19 / réponse chef de projet point 3 : pièce jointe obligatoire selon le type (ex. congé maladie)
     #[ORM\Column]
     private bool $pieceJointeObligatoire = false;
@@ -30,6 +33,8 @@ class TypeConge
     public function getId(): ?int { return $this->id; }
     public function getLibelle(): string { return $this->libelle; }
     public function setLibelle(string $libelle): static { $this->libelle = $libelle; return $this; }
+    public function getDescription(): string { return $this->description; }
+    public function setDescription(string $description): static { $this->description = $description; return $this; }
     public function isPieceJointeObligatoire(): bool { return $this->pieceJointeObligatoire; }
     public function setPieceJointeObligatoire(bool $v): static { $this->pieceJointeObligatoire = $v; return $this; }
     public function isActif(): bool { return $this->actif; }

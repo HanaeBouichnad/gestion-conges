@@ -4,10 +4,13 @@
 
 {% block body %}
     <div class="lp-page-header">
-        <h1>Types de congé</h1>
+        <div>
+            <h1>Types de congé</h1>
+            <p class="lp-page-subtitle">Gérez les différents types de congés</p>
+        </div>
         <a href="{{ path('admin_type_conge_new') }}" class="lp-btn lp-btn-primary">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-            Nouveau type
+            Ajouter un type de congé
         </a>
     </div>
 
@@ -34,10 +37,11 @@
             <table class="lp-table">
                 <thead>
                     <tr>
-                        <th>Libellé</th>
+                        <th>Type de congé</th>
+                        <th class="lp-table-cell-wrap">Description</th>
                         <th>Pièce jointe obligatoire</th>
-                        <th>Solde max par an</th>
-                        <th>Actif</th>
+                        <th>Solde</th>
+                        <th>Statut</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -45,6 +49,7 @@
                     {% for type in types %}
                         <tr>
                             <td>{{ type.libelle }}</td>
+                            <td class="lp-table-cell-wrap">{{ type.description }}</td>
                             <td>
                                 <span class="lp-table-badge {{ type.pieceJointeObligatoire ? 'lp-table-badge-yes' : 'lp-table-badge-no' }}">
                                     {{ type.pieceJointeObligatoire ? 'Oui' : 'Non' }}
@@ -53,7 +58,7 @@
                             <td>{{ type.soldeMax is not null ? type.soldeMax ~ ' j.' : 'Illimité' }}</td>
                             <td>
                                 <span class="lp-table-badge {{ type.actif ? 'lp-table-badge-yes' : 'lp-table-badge-no' }}">
-                                    {{ type.actif ? 'Oui' : 'Non' }}
+                                    {{ type.actif ? 'Actif' : 'Inactif' }}
                                 </span>
                             </td>
                             <td>
