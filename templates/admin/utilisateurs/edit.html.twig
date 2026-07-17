@@ -1,0 +1,63 @@
+{% extends 'app/base.html.twig' %}
+
+{% block title %}Modifier un utilisateur{% endblock %}
+
+{% block body %}
+    <div class="lp-page-header">
+        <h1>Modifier {{ utilisateur.nomComplet }}</h1>
+    </div>
+
+    <div class="lp-form-card">
+        {{ form_start(form, {attr: {class: 'lp-form'}}) }}
+            {{ form_errors(form) }}
+
+            <div class="lp-field-row">
+                <div class="lp-field">
+                    {{ form_label(form.prenom) }}
+                    {{ form_widget(form.prenom) }}
+                    {{ form_errors(form.prenom) }}
+                </div>
+                <div class="lp-field">
+                    {{ form_label(form.nom) }}
+                    {{ form_widget(form.nom) }}
+                    {{ form_errors(form.nom) }}
+                </div>
+            </div>
+
+            <div class="lp-field">
+                {{ form_label(form.email) }}
+                {{ form_widget(form.email) }}
+                {{ form_errors(form.email) }}
+            </div>
+
+            <div class="lp-field">
+                {{ form_label(form.rolePrincipal) }}
+                {{ form_widget(form.rolePrincipal) }}
+                {{ form_errors(form.rolePrincipal) }}
+            </div>
+
+            <div class="lp-field">
+                {{ form_label(form.responsable) }}
+                {{ form_widget(form.responsable) }}
+                {{ form_errors(form.responsable) }}
+            </div>
+
+            <div class="lp-field">
+                {{ form_label(form.photoUrl) }}
+                {{ form_widget(form.photoUrl) }}
+                {{ form_errors(form.photoUrl) }}
+            </div>
+
+            <div class="lp-field">
+                {{ form_label(form.actif) }}
+                {{ form_widget(form.actif) }}
+                {{ form_errors(form.actif) }}
+            </div>
+
+            <button type="submit" class="lp-btn lp-btn-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4L19 6"/></svg>
+                Enregistrer
+            </button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

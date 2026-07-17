@@ -39,7 +39,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'responsable', targetEntity: self::class)]
     private Collection $subordonnes;
-  
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $photoUrl = null;
+
+    #[ORM\Column]
+    private bool $actif = true;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $derniereConnexionAt = null;
 
     public function __construct()
     {
@@ -105,4 +113,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getPhotoUrl(): ?string { return $this->photoUrl; }
+    public function setPhotoUrl(?string $photoUrl): static { $this->photoUrl = $photoUrl; return $this; }
+
+    public function isActif(): bool { return $this->actif; }
+    public function setActif(bool $actif): static { $this->actif = $actif; return $this; }
+
+    public function getDerniereConnexionAt(): ?\DateTimeImmutable { return $this->derniereConnexionAt; }
+    public function setDerniereConnexionAt(?\DateTimeImmutable $derniereConnexionAt): static { $this->derniereConnexionAt = $derniereConnexionAt; return $this; }
 }

@@ -1,5 +1,6 @@
 <div class="lp-blobs"><span></span><span></span><span></span></div>
 
+{% import 'admin/utilisateurs/_macros.html.twig' as m %}
 {% include 'home/navbar.html.twig' %}
 
 <main class="lp-dashboard">
@@ -74,7 +75,7 @@
                             <span>Types de congés</span>
                             <svg class="lp-quicklink-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
                         </a>
-                        <a href="{{ path('rh_soldes_index') }}" class="lp-quicklink">
+                        <a href="{{ path('admin_type_conge_index') }}" class="lp-quicklink">
                             <span class="lp-quicklink-icon" style="background:#E9FBF1; color:#22C55E;">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l7 4"/></svg>
                             </span>
@@ -101,26 +102,23 @@
 
             <div class="lp-dashboard-section lp-dashboard-grid">
                 <div class="lp-feature-card">
-                    <h2 class="lp-dashboard-subhead" style="margin-bottom: 1.1rem;">Prochains jours fériés</h2>
-                    {% if prochainsJoursFeries is empty %}
-                        <p class="lp-empty-text">Aucun jour férié à venir.</p>
+                    <h2 class="lp-dashboard-subhead" style="margin-bottom: 1.1rem;">Utilisateurs</h2>
+                    {% if utilisateursApercu is empty %}
+                        <p class="lp-empty-text">Aucun utilisateur.</p>
                     {% else %}
-                        <div class="lp-upcoming-list">
-                            {% for jf in prochainsJoursFeries %}
-                                <div class="lp-upcoming-item">
-                                    <div class="lp-upcoming-date-badge">
-                                        <strong>{{ jf.date|date('d') }}</strong>
-                                        <span>{{ moisAbrev[(jf.date|date('n')) - 1] }}</span>
-                                    </div>
-                                    <div class="lp-upcoming-body">
-                                        <strong>{{ jf.libelle }}</strong>
-                                        <span>{{ jf.date|date('d/m/Y') }}</span>
+                        <div class="lp-user-preview-list">
+                            {% for utilisateur in utilisateursApercu %}
+                                <div class="lp-user-preview-item">
+                                    {{ m.avatar(utilisateur) }}
+                                    <div>
+                                        <span class="lp-user-preview-name">{{ utilisateur.nomComplet }}</span>
+                                        {{ m.roleBadge(utilisateur) }}
                                     </div>
                                 </div>
                             {% endfor %}
                         </div>
                     {% endif %}
-                    <a href="{{ path('admin_jour_ferie_index') }}" class="lp-see-more">Voir tous les jours fériés &rarr;</a>
+                    <a href="{{ path('admin_user_index') }}" class="lp-see-more">Voir tous les utilisateurs &rarr;</a>
                 </div>
 
                 <div class="lp-feature-card">

@@ -43,6 +43,7 @@ class DashboardDataProvider
                 'nbDemandesRefuseesCeMois' => $this->demandeRepository->countParStatutDepuis(StatutDemande::REFUSE, $debutMois),
                 'nbEmployesActifs' => $this->userRepository->count([]),
                 'prochainsJoursFeries' => $this->jourFerieRepository->findProchains(5),
+                'utilisateursApercu' => $this->userRepository->findBy([], ['nom' => 'ASC', 'prenom' => 'ASC'], 5),
             ] + $this->getGrilleMois($mois, $annee);
         }
 
