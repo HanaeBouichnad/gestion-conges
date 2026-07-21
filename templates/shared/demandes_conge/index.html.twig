@@ -27,7 +27,6 @@
     {% if demandes is empty %}
         <div class="lp-list-empty">
             <p>Aucune demande de congé pour le moment.</p>
-            <a href="{{ path('demande_conge_new') }}" class="lp-btn lp-btn-primary lp-btn-sm">+ Nouvelle demande</a>
         </div>
     {% else %}
         {% for demande in demandes %}
@@ -48,7 +47,7 @@
                             </a>
                         {% endif %}
                         {% if is_granted('DEMANDE_ENVOYER', demande) %}
-                            <form method="post" action="{{ path('demande_conge_envoyer', {id: demande.id}) }}" onsubmit="return confirm('Envoyer cette demande pour approbation ? Elle ne sera plus modifiable directement.');">
+                            <form method="post" action="{{ path('demande_conge_envoyer', {id: demande.id}) }}" data-confirm-message="Envoyer cette demande pour approbation ? Elle ne sera plus modifiable directement.">
                                 <input type="hidden" name="_token" value="{{ csrf_token('envoyer' ~ demande.id) }}">
                                 <button type="submit" class="lp-icon-btn lp-icon-btn-primary" title="Valider">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
@@ -61,7 +60,7 @@
                             </button>
                         {% endif %}
                         {% if is_granted('DEMANDE_DELETE', demande) %}
-                            <form method="post" action="{{ path('demande_conge_annuler', {id: demande.id}) }}" onsubmit="return confirm('Annuler cette demande ?');">
+                            <form method="post" action="{{ path('demande_conge_annuler', {id: demande.id}) }}" data-confirm-message="Annuler cette demande ?">
                                 <input type="hidden" name="_token" value="{{ csrf_token('annuler' ~ demande.id) }}">
                                 <button type="submit" class="lp-icon-btn lp-icon-btn-danger" title="Supprimer">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
@@ -76,5 +75,5 @@
 {% endblock %}
 
 {% block modals %}
-    {% include 'shared/demandes_conge/_modal_annulation.html.twig' %}
+    {% include 'shared/demandes_conge/modal_annulation.html.twig' %}
 {% endblock %}

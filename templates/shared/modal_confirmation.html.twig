@@ -1,0 +1,96 @@
+<div class="lp-modal-backdrop" id="lp-confirm-modal">
+    <div class="lp-form-card" role="alertdialog" aria-modal="true" aria-labelledby="lp-confirm-message" style="max-width: 420px; text-align: center;">
+        <p id="lp-confirm-message" style="margin: 0 0 1.4rem; font-size: 0.95rem; color: #0F172A; line-height: 1.5;"></p>
+        <div style="display: flex; gap: 0.75rem; justify-content: center;">
+            <button type="button" class="lp-btn lp-btn-outline" data-confirm-annuler>Annuler</button>
+            <button type="button" class="lp-btn lp-btn-primary" data-confirm-ok>OK</button>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    // Ce partial est réinclus (et son <script> réexécuté) à chaque rendu de page,
+    // y compris après une redirection Turbo suite à un formulaire confirmé. Sans cette
+    // garde, chaque exécution empilerait de nouveaux listeners document.addEventListener,
+    // qui finissent par se marcher dessus sur le flag confirmApproved (le plus ancien,
+    // lié à un backdrop déjà détaché, consomme le flag avant le listener courant, qui
+    // rouvre alors la modale au lieu de laisser passer la resoumission).
+    if (window.__lpConfirmModalReady) {
+        return;
+    }
+    window.__lpConfirmModalReady = true;
+
+    var formEnAttente = null;
+
+    // Résolu à chaque usage plutôt que mis en cache : le backdrop peut avoir été
+    // recréé par un rendu Turbo depuis l'enregistrement de ces listeners.
+    function getBackdrop() {
+        return document.getElementById('lp-confirm-modal');
+    }
+
+    function ouvrir(form, message) {
+        var backdrop = getBackdrop();
+        if (!backdrop) { return; }
+        formEnAttente = form;
+        backdrop.querySelector('#lp-confirm-message').textContent = message;
+        backdrop.classList.add('lp-modal-open');
+        backdrop.querySelector('[data-confirm-ok]').focus();
+    }
+
+    function fermer() {
+        var backdrop = getBackdrop();
+        if (backdrop) { backdrop.classList.remove('lp-modal-open'); }
+        formEnAttente = null;
+    }
+
+    // Intercepte tout formulaire portant data-confirm-message, où qu'il soit sur la page.
+    document.addEventListener('submit', function (event) {
+        var form = event.target;
+        if (!(form instanceof HTMLFormElement) || !form.dataset.confirmMessage) {
+            return;
+        }
+
+        // Deuxième soumission (après clic sur OK) : on laisse passer.
+        if (form.dataset.confirmApproved === 'true') {
+            delete form.dataset.confirmApproved;
+            return;
+        }
+
+        event.preventDefault();
+        ouvrir(form, form.dataset.confirmMessage);
+    }, true);
+
+    // Délégation : un seul listener, jamais réattaché, quel que soit le nombre
+    // de fois où les boutons OK/Annuler sont recréés par un rendu ultérieur.
+    document.addEventListener('click', function (event) {
+        var backdrop = getBackdrop();
+        if (!backdrop) { return; }
+
+        if (event.target.closest('[data-confirm-ok]')) {
+            if (!formEnAttente) { return; }
+            var form = formEnAttente;
+            fermer();
+            form.dataset.confirmApproved = 'true';
+            form.requestSubmit();
+            return;
+        }
+
+        if (event.target.closest('[data-confirm-annuler]')) {
+            fermer();
+            return;
+        }
+
+        if (event.target === backdrop) {
+            fermer();
+        }
+    });
+
+    document.addEventListener('keydown', function (e) {
+        var backdrop = getBackdrop();
+        if (backdrop && e.key === 'Escape' && backdrop.classList.contains('lp-modal-open')) {
+            fermer();
+        }
+    });
+})();
+</script>

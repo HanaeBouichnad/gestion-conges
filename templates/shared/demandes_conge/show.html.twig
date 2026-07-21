@@ -69,7 +69,7 @@
     </div>
 
     {% if is_granted('DEMANDE_ENVOYER', demande) %}
-        <form method="post" action="{{ path('demande_conge_envoyer', {id: demande.id}) }}" class="lp-show-actions" onsubmit="return confirm('Envoyer cette demande pour approbation ?');">
+        <form method="post" action="{{ path('demande_conge_envoyer', {id: demande.id}) }}" class="lp-show-actions" data-confirm-message="Envoyer cette demande pour approbation ?">
             <input type="hidden" name="_token" value="{{ csrf_token('envoyer' ~ demande.id) }}">
             <button type="submit" class="lp-btn lp-btn-success">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4L19 6"/></svg>
@@ -91,5 +91,5 @@
 {% endblock %}
 
 {% block modals %}
-    {% include 'shared/demandes_conge/_modal_annulation.html.twig' %}
+    {% include 'shared/demandes_conge/modal_annulation.html.twig' %}
 {% endblock %}

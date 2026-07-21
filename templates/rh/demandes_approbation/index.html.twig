@@ -36,7 +36,7 @@
                 </div>
                 <div class="lp-demande-card-side">
                     <div class="lp-demande-card-actions">
-                        <form method="post" action="{{ path('approbation_approuver', {id: demande.id}) }}" onsubmit="return confirm('Approuver cette demande ?');">
+                        <form method="post" action="{{ path('approbation_approuver', {id: demande.id}) }}" data-confirm-message="Approuver cette demande ?">
                             <input type="hidden" name="_token" value="{{ csrf_token('approuver' ~ demande.id) }}">
                             <button type="submit" class="lp-btn lp-btn-success">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4L19 6"/></svg>
