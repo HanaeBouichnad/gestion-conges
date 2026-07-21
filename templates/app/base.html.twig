@@ -6,6 +6,9 @@
     <title>{% block title %}Webodrop Congés{% endblock %}</title>
     <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}?v={{ asset_version('images/favicon.png') }}">
     {% include 'home/styles.html.twig' %}
+    {% block javascripts %}
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
+    {% endblock %}
 </head>
 <body>
     <div class="lp-blobs"><span></span><span></span><span></span></div>
@@ -19,6 +22,7 @@
     </main>
 
     {% block modals %}{% endblock %}
+    {% include 'shared/modal_confirmation.html.twig' %}
 
     <footer class="lp-footer">
         <div class="lp-container">
