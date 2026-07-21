@@ -4,11 +4,10 @@
 
 {% block body %}
     <div class="lp-page-header">
-        <h1>Mes soldes de congé</h1>
+        <h1>Répartition de mon solde</h1>
     </div>
 
     <div class="lp-dashboard-section">
-        <h2 class="lp-dashboard-subhead">Répartition de mon solde</h2>
         <div class="lp-type-grid">
             {% for solde in soldes %}
                 {% set libelleLower = solde.typeConge.libelle|lower %}

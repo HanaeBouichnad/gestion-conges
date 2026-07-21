@@ -3,14 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\DemandeAnnulation;
-use App\Entity\JournalSolde;
-use App\Entity\SoldeConge;
 use App\Entity\User;
 use App\Enum\OrigineAnnulation;
 use App\Enum\StatutDemande;
 use App\Enum\StatutDemandeAnnulation;
 use App\Repository\DemandeAnnulationRepository;
-use App\Repository\SoldeCongeRepository;
+use App\Service\SoldeCongeManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,7 +33,7 @@ class RhAnnulationController extends AbstractController
         Request $request,
         DemandeAnnulation $demandeAnnulation,
         EntityManagerInterface $em,
-        SoldeCongeRepository $soldeRepository
+        SoldeCongeManager $soldeCongeManager
     ): Response {
         if (!$this->isCsrfTokenValid('accepter'.$demandeAnnulation->getId(), $request->request->get('_token'))) {
             $this->addFlash('error', 'Jeton de sécurité invalide.');
@@ -59,29 +57,11 @@ class RhAnnulationController extends AbstractController
         $demandeAnnulation->setTraitePar($rh);
         $demandeAnnulation->setDateTraitement(new \DateTimeImmutable());
 
-        $solde = $soldeRepository->findOneParEmployeEtType($demande->getEmploye(), $demande->getTypeConge());
-        if (!$solde) {
-            $solde = new SoldeConge();
-            $solde->setEmploye($demande->getEmploye());
-            $solde->setTypeConge($demande->getTypeConge());
-            $solde->setSolde(0.0);
-        }
-
-        $nombreJours = $demande->getNombreJours();
-        $solde->setSolde($solde->getSolde() + $nombreJours);
-        $em->persist($solde);
-
-        $journal = new JournalSolde();
-        $journal->setEmploye($demande->getEmploye());
-        $journal->setTypeConge($demande->getTypeConge());
-        $journal->setAuteur($rh);
-        $journal->setNombreJours($nombreJours);
-        $journal->setNote(sprintf(
+        $soldeCongeManager->crediter($demande, $rh, sprintf(
             "Recrédit automatique suite à l'acceptation de la demande d'annulation de la demande de congé #%d (motif : %s)",
             $demande->getId(),
             $demandeAnnulation->getMotif()
         ));
-        $em->persist($journal);
 
         $em->flush();
 

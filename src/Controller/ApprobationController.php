@@ -8,6 +8,7 @@ use App\Enum\StatutDemande;
 use App\Form\RefusDemandeType;
 use App\Repository\DemandeCongeRepository;
 use App\Security\Voter\DemandeCongeVoter;
+use App\Service\SoldeCongeManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,7 +32,7 @@ class ApprobationController extends AbstractController
     }
 
     #[Route('/{id}/approuver', name: 'approbation_approuver', methods: ['POST'])]
-    public function approuver(Request $request, DemandeConge $demande, EntityManagerInterface $em): Response
+    public function approuver(Request $request, DemandeConge $demande, EntityManagerInterface $em, SoldeCongeManager $soldeCongeManager): Response
     {
         $this->denyAccessUnlessGranted(DemandeCongeVoter::APPROUVER, $demande);
 
@@ -40,8 +41,12 @@ class ApprobationController extends AbstractController
             return $this->redirectToRoute('approbation_index');
         }
 
+        /** @var User $approbateur */
+        $approbateur = $this->getUser();
+
         $demande->setStatut(StatutDemande::APPROUVE);
         $demande->setDateModification(new \DateTimeImmutable());
+        $soldeCongeManager->deduire($demande, $approbateur);
         $em->flush();
 
         $this->addFlash('success', 'La demande a été approuvée.');

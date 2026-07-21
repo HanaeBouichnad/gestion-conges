@@ -21,6 +21,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Entity\PieceJointe;
 use App\Service\PieceJointeUploader;
+use App\Service\SoldeCongeManager;
 
 #[Route('/demandes')]
 #[IsGranted('ROLE_EMPLOYE')]
@@ -39,8 +40,13 @@ class DemandeCongeController extends AbstractController
     }
 
     #[Route('/nouvelle', name: 'demande_conge_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $em, UserRepository $userRepository, PieceJointeUploader $uploader): Response
-    {
+    public function new(
+        Request $request,
+        EntityManagerInterface $em,
+        UserRepository $userRepository,
+        PieceJointeUploader $uploader,
+        SoldeCongeManager $soldeCongeManager
+    ): Response {
         /** @var User $user */
         $user = $this->getUser();
 
@@ -77,6 +83,12 @@ class DemandeCongeController extends AbstractController
                 return $this->render('shared/demandes_conge/new.html.twig', ['form' => $form]);
             }
 
+            $erreurSolde = $soldeCongeManager->verifierDisponibilite($demande);
+            if ($erreurSolde !== null) {
+                $this->addFlash('error', $erreurSolde);
+                return $this->render('shared/demandes_conge/new.html.twig', ['form' => $form]);
+            }
+
             $em->persist($demande);
             $em->flush();
 
@@ -103,8 +115,13 @@ class DemandeCongeController extends AbstractController
     }
 
     #[Route('/{id}/modifier', name: 'demande_conge_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, DemandeConge $demande, EntityManagerInterface $em, UserRepository $userRepository): Response
-    {
+    public function edit(
+        Request $request,
+        DemandeConge $demande,
+        EntityManagerInterface $em,
+        UserRepository $userRepository,
+        SoldeCongeManager $soldeCongeManager
+    ): Response {
         $this->denyAccessUnlessGranted(DemandeCongeVoter::EDIT, $demande);
 
         /** @var User $user */
@@ -119,6 +136,12 @@ class DemandeCongeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if ($demande->getDateFin() < $demande->getDateDebut()) {
                 $this->addFlash('error', 'La date de fin doit être postérieure ou égale à la date de début.');
+                return $this->render('shared/demandes_conge/edit.html.twig', ['form' => $form, 'demande' => $demande]);
+            }
+
+            $erreurSolde = $soldeCongeManager->verifierDisponibilite($demande);
+            if ($erreurSolde !== null) {
+                $this->addFlash('error', $erreurSolde);
                 return $this->render('shared/demandes_conge/edit.html.twig', ['form' => $form, 'demande' => $demande]);
             }
 
