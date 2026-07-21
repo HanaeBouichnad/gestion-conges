@@ -21,7 +21,7 @@ class LoginSuccessListener
             return;
         }
 
-        $user->setDerniereConnexionAt(new \DateTimeImmutable());
+        $user->setDerniereConnexionAt(new \DateTimeImmutable('now', new \DateTimeZone('UTC')));
         $this->em->flush();
     }
 }

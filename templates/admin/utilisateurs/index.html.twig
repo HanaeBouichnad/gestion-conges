@@ -1,5 +1,5 @@
 {% extends 'app/base.html.twig' %}
-{% import 'admin/utilisateurs/_macros.html.twig' as m %}
+{% import 'admin/utilisateurs/macros.html.twig' as m %}
 
 {% block title %}Utilisateurs{% endblock %}
 
@@ -62,7 +62,7 @@
                                     {{ utilisateur.actif ? 'Actif' : 'Inactif' }}
                                 </span>
                             </td>
-                            <td>{{ utilisateur.derniereConnexionAt ? utilisateur.derniereConnexionAt|date('d/m/Y H:i') : 'Jamais connecté' }}</td>
+                            <td>{{ utilisateur.derniereConnexionAt ? utilisateur.derniereConnexionAt|date('d/m/Y H:i', 'Africa/Casablanca') : 'Jamais connecté' }}</td>
                             <td>
                                 <div class="lp-row-menu" data-row-menu>
                                     <button type="button" class="lp-icon-btn" data-row-menu-toggle title="Actions">

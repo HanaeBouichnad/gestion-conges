@@ -1,0 +1,55 @@
+<div class="lp-modal-backdrop" id="lp-annulation-modal">
+    <div class="lp-form-card" role="dialog" aria-modal="true" aria-labelledby="lp-annulation-title" style="max-width: 480px;">
+        <button type="button" class="lp-modal-close" aria-label="Fermer" data-annulation-close>&times;</button>
+
+        <h2 id="lp-annulation-title">Demander l'annulation</h2>
+        <p class="lp-page-subtitle">Expliquez pourquoi vous ne souhaitez plus prendre ce congé. Votre demande sera transmise aux RH.</p>
+
+        {{ form_start(formAnnulation, {action: '', attr: {class: 'lp-form', id: 'lp-annulation-form', 'data-base-action': path('demande_conge_demander_annulation', {id: '__ID__'})}}) }}
+            <div class="lp-field">
+                {{ form_label(formAnnulation.motif) }}
+                {{ form_widget(formAnnulation.motif) }}
+                {{ form_errors(formAnnulation.motif) }}
+            </div>
+
+            <button type="submit" class="lp-btn lp-btn-primary">Envoyer la demande d'annulation</button>
+        {{ form_end(formAnnulation) }}
+    </div>
+</div>
+
+<script>
+(function () {
+    var backdrop = document.getElementById('lp-annulation-modal');
+    var form = document.getElementById('lp-annulation-form');
+    if (!backdrop || !form) { return; }
+
+    function openModal(demandeId) {
+        form.action = form.dataset.baseAction.replace('__ID__', demandeId);
+        backdrop.classList.add('lp-modal-open');
+    }
+
+    function closeModal() {
+        backdrop.classList.remove('lp-modal-open');
+    }
+
+    document.querySelectorAll('[data-annulation-trigger]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            openModal(btn.dataset.demandeId);
+        });
+    });
+
+    document.querySelectorAll('[data-annulation-close]').forEach(function (el) {
+        el.addEventListener('click', closeModal);
+    });
+
+    backdrop.addEventListener('click', function (e) {
+        if (e.target === backdrop) { closeModal(); }
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && backdrop.classList.contains('lp-modal-open')) {
+            closeModal();
+        }
+    });
+})();
+</script>
