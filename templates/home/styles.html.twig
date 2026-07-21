@@ -1,4 +1,4 @@
-{% include '_fonts.html.twig' %}
+{% include 'fonts.html.twig' %}
 <style>
     * { box-sizing: border-box; }
     html, body {
@@ -8,6 +8,11 @@
         color: #0F172A;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
         scroll-behavior: smooth;
+    }
+    body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
     }
     a { color: inherit; }
 
@@ -750,7 +755,7 @@
     .lp-solde-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 0.5rem; }
 
     /* ---- Pages "app interne" (Mes demandes / Mes soldes / Calendrier) ---- */
-    .lp-app-page { padding: 2rem 0 3rem; position: relative; z-index: 1; min-height: 60vh; }
+    .lp-app-page { padding: 2rem 0 3rem; position: relative; z-index: 1; flex: 1 0 auto; }
     .lp-page-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.4rem; flex-wrap: wrap; }
     .lp-page-header h1 { font-size: 1.7rem; font-weight: 800; margin: 0; letter-spacing: -0.01em; }
     .lp-page-header-title { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; }
