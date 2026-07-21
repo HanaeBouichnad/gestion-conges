@@ -26,10 +26,16 @@ class AppFixtures extends Fixture
         $feries = [
             ['2026-01-01', 'Nouvel An'],
             ['2026-01-11', 'Manifeste de l’Indépendance'],
+
+            
             ['2026-05-01', 'Fête du Travail'],
             ['2026-07-30', 'Fête du Trône'],
             ['2026-08-14', 'Journée Oued Eddahab'],
             ['2026-08-20', 'Révolution du Roi et du Peuple'],
+
+
+
+            
             ['2026-08-21', 'Fête de la Jeunesse'],
             ['2026-11-06', 'Marche Verte'],
             ['2026-11-18', 'Fête de l’Indépendance'],
@@ -59,7 +65,7 @@ class AppFixtures extends Fixture
                 $solde = new SoldeConge();
                 $solde->setEmploye($u);
                 $solde->setTypeConge($type);
-                $solde->setSolde($type === $typeAnnuel ? 18.0 : 0.0);
+                $solde->setSolde(0.0);
                 $manager->persist($solde);
             }
         }
