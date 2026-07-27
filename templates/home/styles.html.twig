@@ -126,7 +126,7 @@
     .lp-btn-danger:hover { transform: translateY(-1px); box-shadow: 0 14px 26px -8px rgba(239,68,68,0.6); color: #fff; }
 
     /* ---- Hero ---- */
-    .lp-hero { padding: 3.5rem 0 6.5rem; scroll-margin-top: 90px; }
+    .lp-hero { padding: 2.5rem 0 1rem; scroll-margin-top: 90px; }
     .lp-hero-grid {
         display: flex;
         justify-content: center;
@@ -157,33 +157,78 @@
         max-width: 480px;
         margin: 0 auto 2.2rem;
     }
-    .lp-hero-ctas { display: flex; justify-content: center; gap: 1rem; margin-bottom: 2.8rem; flex-wrap: wrap; }
+    .lp-hero-ctas { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
 
-    .lp-reassurance-row { display: flex; justify-content: space-between; gap: 1.8rem; flex-wrap: wrap; }
-    .lp-reassurance {
+    /* ---- Section "Comment ça marche ?" ---- */
+    .lp-how-section {
+        position: relative;
+        overflow: hidden;
+        padding: 0.5rem 0 2.5rem;
+    }
+    .lp-how-grid {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: 3rem;
+        flex-wrap: wrap;
+    }
+    .lp-how-steps {
+        flex: 1;
+        min-width: 0;
         display: flex;
         align-items: flex-start;
-        gap: 0.7rem;
-        max-width: 190px;
-        text-align: left;
+        gap: 0.5rem;
     }
-    .lp-reassurance-icon {
-        flex-shrink: 0;
-        width: 34px;
-        height: 34px;
-        border-radius: 10px;
-        background: #E9F1FD;
-        color: #2E7DE1;
+    .lp-how-step {
+        flex: 1;
+        min-width: 0;
+        text-align: center;
+        background: #fff;
+        border: 1px solid #EEF2F7;
+        border-radius: 18px;
+        padding: 1.6rem;
+        box-shadow: 0 16px 34px -22px rgba(15,23,42,0.15);
+    }
+    .lp-how-icon-wrap { position: relative; width: fit-content; margin: 0 auto 1.1rem; }
+    .lp-how-badge {
+        position: absolute;
+        top: -6px;
+        left: -6px;
+        z-index: 2;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.78rem;
+        font-weight: 800;
+        color: #fff;
+        box-shadow: 0 6px 14px -4px rgba(15,23,42,0.35);
+    }
+    .lp-how-badge-purple { background: #8B5CF6; }
+    .lp-how-badge-green { background: #22C55E; }
+    .lp-how-badge-orange { background: #F59E0B; }
+    .lp-how-icon {
+        width: 76px;
+        height: 76px;
+        border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
     }
-    .lp-reassurance-icon svg { width: 18px; height: 18px; }
-    .lp-reassurance strong { display: block; font-size: 0.88rem; margin-bottom: 0.15rem; }
-    .lp-reassurance span { font-size: 0.8rem; color: #64748B; line-height: 1.4; }
+    .lp-how-icon svg { width: 30px; height: 30px; }
+    .lp-how-icon-purple { background: linear-gradient(160deg, #F6F2FE, #EAE0FC); color: #7C3AED; }
+    .lp-how-icon-green { background: linear-gradient(160deg, #F1FCF5, #DFF6E7); color: #16A34A; }
+    .lp-how-icon-orange { background: linear-gradient(160deg, #FFFBEF, #FDEECB); color: #D97706; }
+    .lp-how-step h3 { font-size: 1rem; font-weight: 700; margin: 0 0 0.4rem; }
+    .lp-how-step p { font-size: 0.85rem; color: #64748B; line-height: 1.5; margin: 0; }
+    .lp-how-arrow { flex-shrink: 0; width: 60px; padding-top: 26px; }
+    .lp-how-arrow svg { width: 100%; height: auto; display: block; }
 
     /* ---- Section fonctionnalités ---- */
-    .lp-features-section { padding: 2rem 0 6rem; scroll-margin-top: 60px; }
+    .lp-features-section { padding: 3rem 0 3rem; scroll-margin-top: 60px; }
     .lp-section-head { text-align: center; max-width: 620px; margin: 0 auto 3.2rem; }
     .lp-section-head h2 { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.01em; margin: 0 0 0.8rem; }
     .lp-section-head p { color: #64748B; font-size: 1.05rem; margin: 0; }
@@ -1059,6 +1104,8 @@
     @media (max-width: 640px) {
         .lp-features-cards { grid-template-columns: 1fr; max-width: 420px; }
         .lp-type-grid { grid-template-columns: repeat(2, 1fr); }
+        .lp-how-steps { flex-direction: column; align-items: stretch; gap: 2.2rem; }
+        .lp-how-arrow { display: none; }
     }
     @media (max-width: 560px) {
         .lp-hero-intro h1 { font-size: 2.2rem; }
