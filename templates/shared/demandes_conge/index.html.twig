@@ -5,10 +5,10 @@
 {% block body %}
     <div class="lp-page-header">
         <h1>Mes demandes de congé</h1>
-        <a href="{{ path('demande_conge_new') }}" class="lp-btn lp-btn-primary">
+        <button type="button" class="lp-btn lp-btn-primary" data-nouvelle-demande data-nouvelle-demande-url="{{ path('demande_conge_new') }}" data-tous-soldes-nuls="{{ tousSoldesNuls ? '1' : '0' }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
             Nouvelle demande
-        </a>
+        </button>
     </div>
 
     {% for message in app.flashes('success') %}
@@ -76,4 +76,19 @@
 
 {% block modals %}
     {% include 'shared/demandes_conge/modal_annulation.html.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+    document.addEventListener('click', function (event) {
+        var bouton = event.target.closest('[data-nouvelle-demande]');
+        if (!bouton) { return; }
+        if (bouton.dataset.tousSoldesNuls === '1') {
+            window.lpOuvrirErreur('Tous vos soldes de congé sont nuls. Vous ne pouvez créer aucune nouvelle demande.');
+            return;
+        }
+        window.location.href = bouton.dataset.nouvelleDemandeUrl;
+    });
+    </script>
 {% endblock %}

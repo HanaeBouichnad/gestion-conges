@@ -1,0 +1,54 @@
+<div class="lp-modal-backdrop" id="lp-erreur-modal">
+    <div class="lp-form-card" role="alertdialog" aria-modal="true" aria-labelledby="lp-erreur-message" style="max-width: 420px; text-align: center;">
+        <p id="lp-erreur-message" style="margin: 0 0 1.4rem; font-size: 0.95rem; color: #0F172A; line-height: 1.5;"></p>
+        <div style="display: flex; justify-content: center;">
+            <button type="button" class="lp-btn lp-btn-primary" data-erreur-ok>OK</button>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    if (window.__lpErreurModalReady) {
+        return;
+    }
+    window.__lpErreurModalReady = true;
+
+    function getBackdrop() {
+        return document.getElementById('lp-erreur-modal');
+    }
+
+    window.lpOuvrirErreur = function (message, redirectUrl) {
+        var backdrop = getBackdrop();
+        if (!backdrop) { return; }
+        backdrop.querySelector('#lp-erreur-message').textContent = message;
+        backdrop.dataset.redirectUrl = redirectUrl || '';
+        backdrop.classList.add('lp-modal-open');
+        backdrop.querySelector('[data-erreur-ok]').focus();
+    };
+
+    function fermer() {
+        var backdrop = getBackdrop();
+        if (backdrop) { backdrop.classList.remove('lp-modal-open'); }
+    }
+
+    document.addEventListener('click', function (event) {
+        var backdrop = getBackdrop();
+        if (!backdrop) { return; }
+        if (event.target.closest('[data-erreur-ok]')) {
+            var redirectUrl = backdrop.dataset.redirectUrl;
+            fermer();
+            if (redirectUrl) { window.location.href = redirectUrl; }
+            return;
+        }
+        if (event.target === backdrop) { fermer(); }
+    });
+
+    document.addEventListener('keydown', function (e) {
+        var backdrop = getBackdrop();
+        if (backdrop && e.key === 'Escape' && backdrop.classList.contains('lp-modal-open')) {
+            fermer();
+        }
+    });
+})();
+</script>

@@ -41,21 +41,18 @@ class SoldeCongeManager
 
     /**
      * Vérifie que la demande ne dépasse pas le solde disponible.
-     * Retourne un message d'erreur si le solde est dépassé, null sinon (y compris pour un type illimité).
+     * Retourne un message d'erreur si le solde est dépassé, null sinon.
      */
     public function verifierDisponibilite(DemandeConge $demande): ?string
     {
         $type = $demande->getTypeConge();
-        if ($type->getSoldeMax() === null) {
-            return null;
-        }
 
         $jours = $this->joursOuvresCalculator->calculer($demande);
         $solde = $this->trouverOuCreerSolde($demande->getEmploye(), $type);
 
         if ($jours > $solde->getSolde()) {
             return sprintf(
-                'Solde insuffisant pour "%s" : %s j. ouvré(s) demandé(s), %s j. disponible(s).',
+                'Solde insuffisant pour "%s" : vous demandez %s jour(s), mais il ne vous reste que %s jour(s) disponible(s).',
                 $type->getLibelle(),
                 $jours,
                 $solde->getSolde()
@@ -88,9 +85,6 @@ class SoldeCongeManager
     private function ajuster(DemandeConge $demande, User $auteur, float $jours, string $note): void
     {
         $type = $demande->getTypeConge();
-        if ($type->getSoldeMax() === null) {
-            return;
-        }
 
         $solde = $this->trouverOuCreerSolde($demande->getEmploye(), $type);
         $solde->setSolde($solde->getSolde() + $jours);

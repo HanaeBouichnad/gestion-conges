@@ -45,11 +45,17 @@ class DemandeCongeNewTest extends WebTestCase
             $crawler = $client->request('GET', '/demandes/nouvelle');
             $form = $crawler->selectButton('Créer en brouillon')->form();
 
-            $form['demande_conge[typeConge]']->select(
-                $crawler->filter('select[name="demande_conge[typeConge]"] option')->first()->attr('value')
-            );
+            $typeId = $crawler->filter('select[name="demande_conge[typeConge]"] option')->first()->attr('value');
+            $form['demande_conge[typeConge]']->select($typeId);
             $form['demande_conge[dateDebut]'] = '2026-09-01';
             $form['demande_conge[dateFin]'] = '2026-09-02';
+
+            // La création passe par verifierDisponibilite(), qui compare désormais toujours
+            // au solde réel de l'employé : il en faut donc un suffisant pour le type choisi ici.
+            $em->getConnection()->executeStatement(
+                'UPDATE solde_conge SET solde = 10 WHERE employe_id = :employeId AND type_conge_id = :typeId',
+                ['employeId' => $user->getId(), 'typeId' => $typeId]
+            );
 
             $client->submit($form);
 
@@ -57,6 +63,10 @@ class DemandeCongeNewTest extends WebTestCase
         } finally {
             $em->getConnection()->executeStatement(
                 "DELETE FROM demande_conge WHERE date_debut = '2026-09-01' AND date_fin = '2026-09-02'"
+            );
+            $em->getConnection()->executeStatement(
+                'UPDATE solde_conge SET solde = 0 WHERE employe_id = :employeId AND type_conge_id = :typeId',
+                ['employeId' => $user->getId(), 'typeId' => $typeId ?? null]
             );
         }
     }

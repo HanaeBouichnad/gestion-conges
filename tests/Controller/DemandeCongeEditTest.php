@@ -75,6 +75,13 @@ class DemandeCongeEditTest extends WebTestCase
         $approbateur = $userRepository->findOneBy(['email' => 'responsable@example.com']);
         $type = $em->getRepository(TypeConge::class)->findOneBy(['libelle' => 'Congé annuel']);
 
+        // La modification passe par verifierDisponibilite(), qui compare désormais toujours
+        // au solde réel de l'employé : il en faut donc un suffisant pour ce type ici.
+        $em->getConnection()->executeStatement(
+            'UPDATE solde_conge SET solde = 10 WHERE employe_id = :employeId AND type_conge_id = :typeId',
+            ['employeId' => $employe->getId(), 'typeId' => $type->getId()]
+        );
+
         $demande = new DemandeConge();
         $demande->setEmploye($employe);
         $demande->setTypeConge($type);
@@ -90,8 +97,15 @@ class DemandeCongeEditTest extends WebTestCase
 
     private function supprimerDemande(int $id): void
     {
-        static::getContainer()->get(EntityManagerInterface::class)
-            ->getConnection()
-            ->executeStatement('DELETE FROM demande_conge WHERE id = ?', [$id]);
+        $em = static::getContainer()->get(EntityManagerInterface::class);
+        $em->getConnection()->executeStatement('DELETE FROM demande_conge WHERE id = ?', [$id]);
+
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $employe = $userRepository->findOneBy(['email' => 'employe@example.com']);
+        $type = $em->getRepository(TypeConge::class)->findOneBy(['libelle' => 'Congé annuel']);
+        $em->getConnection()->executeStatement(
+            'UPDATE solde_conge SET solde = 0 WHERE employe_id = :employeId AND type_conge_id = :typeId',
+            ['employeId' => $employe->getId(), 'typeId' => $type->getId()]
+        );
     }
 }

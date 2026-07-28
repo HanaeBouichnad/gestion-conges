@@ -17,10 +17,38 @@
         </div>
     {% endfor %}
     {% for message in app.flashes('error') %}
-        <div class="lp-alert lp-alert-error">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
-            {{ message }}
-        </div>
+        <script>
+            (function () {
+                function ouvrir() {
+                    if (window.lpOuvrirErreur) {
+                        window.lpOuvrirErreur({{ message|json_encode|raw }});
+                    }
+                    document.removeEventListener('DOMContentLoaded', ouvrir);
+                    document.removeEventListener('turbo:load', ouvrir);
+                    document.removeEventListener('turbo:render', ouvrir);
+                }
+                document.addEventListener('DOMContentLoaded', ouvrir);
+                document.addEventListener('turbo:load', ouvrir);
+                document.addEventListener('turbo:render', ouvrir);
+            })();
+        </script>
+    {% endfor %}
+    {% for message in app.flashes('error_solde') %}
+        <script>
+            (function () {
+                function ouvrir() {
+                    if (window.lpOuvrirErreur) {
+                        window.lpOuvrirErreur({{ message|json_encode|raw }});
+                    }
+                    document.removeEventListener('DOMContentLoaded', ouvrir);
+                    document.removeEventListener('turbo:load', ouvrir);
+                    document.removeEventListener('turbo:render', ouvrir);
+                }
+                document.addEventListener('DOMContentLoaded', ouvrir);
+                document.addEventListener('turbo:load', ouvrir);
+                document.addEventListener('turbo:render', ouvrir);
+            })();
+        </script>
     {% endfor %}
 
     <div class="lp-form-card">

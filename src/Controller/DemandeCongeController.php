@@ -11,6 +11,7 @@ use App\Form\DemandeAnnulationType;
 use App\Form\DemandeCongeType;
 use App\Repository\DemandeAnnulationRepository;
 use App\Repository\DemandeCongeRepository;
+use App\Repository\SoldeCongeRepository;
 use App\Repository\UserRepository;
 use App\Security\Voter\DemandeCongeVoter;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,14 +29,23 @@ use App\Service\SoldeCongeManager;
 class DemandeCongeController extends AbstractController
 {
     #[Route('', name: 'demande_conge_index', methods: ['GET'])]
-    public function index(DemandeCongeRepository $repository): Response
+    public function index(DemandeCongeRepository $repository, SoldeCongeRepository $soldeCongeRepository): Response
     {
         /** @var User $user */
         $user = $this->getUser();
 
+        $tousSoldesNuls = true;
+        foreach ($soldeCongeRepository->findParEmploye($user) as $solde) {
+            if ($solde->getSolde() > 0) {
+                $tousSoldesNuls = false;
+                break;
+            }
+        }
+
         return $this->render('shared/demandes_conge/index.html.twig', [
             'demandes' => $repository->findMesDemandes($user),
             'formAnnulation' => $this->createForm(DemandeAnnulationType::class)->createView(),
+            'tousSoldesNuls' => $tousSoldesNuls,
         ]);
     }
 
@@ -63,13 +73,13 @@ class DemandeCongeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if ($demande->getDateFin() < $demande->getDateDebut()) {
                 $this->addFlash('error', 'La date de fin doit être postérieure ou égale à la date de début.');
-                return $this->render('shared/demandes_conge/new.html.twig', ['form' => $form]);
+                return $this->render('shared/demandes_conge/new.html.twig', ['form' => $form], new Response(null, Response::HTTP_UNPROCESSABLE_ENTITY));
             }
 
             $approbateur = $demande->getEmploye()->getResponsable();
             if (!$approbateur) {
                 $this->addFlash('error', "Impossible de créer la demande : aucun responsable hiérarchique n'est déclaré pour cet employé.");
-                return $this->render('shared/demandes_conge/new.html.twig', ['form' => $form]);
+                return $this->render('shared/demandes_conge/new.html.twig', ['form' => $form], new Response(null, Response::HTTP_UNPROCESSABLE_ENTITY));
             }
             $demande->setApprobateur($approbateur);
             $demande->setStatut(StatutDemande::BROUILLON);
@@ -80,13 +90,13 @@ class DemandeCongeController extends AbstractController
                     'Une pièce jointe est obligatoire pour le type de congé "%s".',
                     $demande->getTypeConge()->getLibelle()
                 ));
-                return $this->render('shared/demandes_conge/new.html.twig', ['form' => $form]);
+                return $this->render('shared/demandes_conge/new.html.twig', ['form' => $form], new Response(null, Response::HTTP_UNPROCESSABLE_ENTITY));
             }
 
             $erreurSolde = $soldeCongeManager->verifierDisponibilite($demande);
             if ($erreurSolde !== null) {
-                $this->addFlash('error', $erreurSolde);
-                return $this->render('shared/demandes_conge/new.html.twig', ['form' => $form]);
+                $this->addFlash('error_solde', $erreurSolde);
+                return $this->render('shared/demandes_conge/new.html.twig', ['form' => $form], new Response(null, Response::HTTP_UNPROCESSABLE_ENTITY));
             }
 
             $em->persist($demande);
@@ -99,7 +109,9 @@ class DemandeCongeController extends AbstractController
             $this->addFlash('success', 'La demande de congé a été créée en brouillon.');
             return $this->redirectToRoute('demande_conge_index');
         }
-        return $this->render('shared/demandes_conge/new.html.twig', ['form' => $form]);
+
+        $statut = $form->isSubmitted() ? Response::HTTP_UNPROCESSABLE_ENTITY : Response::HTTP_OK;
+        return $this->render('shared/demandes_conge/new.html.twig', ['form' => $form], new Response(null, $statut));
     }
 
     #[Route('/{id}', name: 'demande_conge_show', methods: ['GET'])]
@@ -136,13 +148,13 @@ class DemandeCongeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if ($demande->getDateFin() < $demande->getDateDebut()) {
                 $this->addFlash('error', 'La date de fin doit être postérieure ou égale à la date de début.');
-                return $this->render('shared/demandes_conge/edit.html.twig', ['form' => $form, 'demande' => $demande]);
+                return $this->render('shared/demandes_conge/edit.html.twig', ['form' => $form, 'demande' => $demande], new Response(null, Response::HTTP_UNPROCESSABLE_ENTITY));
             }
 
             $erreurSolde = $soldeCongeManager->verifierDisponibilite($demande);
             if ($erreurSolde !== null) {
                 $this->addFlash('error', $erreurSolde);
-                return $this->render('shared/demandes_conge/edit.html.twig', ['form' => $form, 'demande' => $demande]);
+                return $this->render('shared/demandes_conge/edit.html.twig', ['form' => $form, 'demande' => $demande], new Response(null, Response::HTTP_UNPROCESSABLE_ENTITY));
             }
 
             $demande->setDateModification(new \DateTimeImmutable());
@@ -152,7 +164,8 @@ class DemandeCongeController extends AbstractController
             return $this->redirectToRoute('demande_conge_index');
         }
 
-        return $this->render('shared/demandes_conge/edit.html.twig', ['form' => $form, 'demande' => $demande]);
+        $statut = $form->isSubmitted() ? Response::HTTP_UNPROCESSABLE_ENTITY : Response::HTTP_OK;
+        return $this->render('shared/demandes_conge/edit.html.twig', ['form' => $form, 'demande' => $demande], new Response(null, $statut));
     }
 
     #[Route('/{id}/envoyer', name: 'demande_conge_envoyer', methods: ['POST'])]
