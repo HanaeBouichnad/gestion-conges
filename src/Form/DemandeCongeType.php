@@ -58,7 +58,7 @@ class DemandeCongeType extends AbstractType
             ->add('pieceJointeFichier', FileType::class, [
                 'mapped' => false,
                 'required' => false,
-                'label' => 'Pièce jointe (certificat médical, justificatif...)',
+                'label' => 'Pièce jointe (certificat médical, justificatif des heures supplémentaires...)',
                 'constraints' => [
                     new File(
                         maxSize: '5M',

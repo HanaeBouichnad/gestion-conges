@@ -79,6 +79,22 @@ class DemandeCongeRepository extends ServiceEntityRepository
     }
 
     /** @return DemandeConge[] */
+    public function findApprouveesDeLAnnee(User $employe, int $annee): array
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.employe = :employe')
+            ->andWhere('d.statut = :statut')
+            ->andWhere('d.dateDebut BETWEEN :debut AND :fin')
+            ->setParameter('employe', $employe)
+            ->setParameter('statut', StatutDemande::APPROUVE)
+            ->setParameter('debut', new \DateTimeImmutable("{$annee}-01-01"))
+            ->setParameter('fin', new \DateTimeImmutable("{$annee}-12-31"))
+            ->orderBy('d.dateDebut', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /** @return DemandeConge[] */
     public function findApprouvees(): array
     {
         return $this->createQueryBuilder('d')

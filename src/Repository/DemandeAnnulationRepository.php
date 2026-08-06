@@ -26,6 +26,16 @@ class DemandeAnnulationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function countEnAttente(): int
+    {
+        return (int) $this->createQueryBuilder('a')
+            ->select('COUNT(a.id)')
+            ->andWhere('a.statut = :statut')
+            ->setParameter('statut', StatutDemandeAnnulation::EN_ATTENTE)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     public function findOneEnAttentePour(DemandeConge $demande): ?DemandeAnnulation
     {
         return $this->createQueryBuilder('a')

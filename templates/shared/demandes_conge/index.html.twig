@@ -29,48 +29,62 @@
             <p>Aucune demande de congé pour le moment.</p>
         </div>
     {% else %}
-        {% for demande in demandes %}
-            <div class="lp-demande-card">
-                <div class="lp-demande-card-info">
-                    <strong>{{ demande.typeConge.libelle }}</strong>
-                    <span class="lp-demande-card-meta">{{ demande.employe.nomComplet }} — {{ demande.dateDebut|date('d/m/Y') }} au {{ demande.dateFin|date('d/m/Y') }}</span>
-                </div>
-                <div class="lp-demande-card-side">
-                    <span class="status-badge status-{{ demande.statut.value }}">{{ demande.statutLabel }}</span>
-                    <div class="lp-demande-card-actions">
-                        <a href="{{ path('demande_conge_show', {id: demande.id}) }}" class="lp-icon-btn" title="Voir">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
-                        </a>
-                        {% if is_granted('DEMANDE_EDIT', demande) %}
-                            <a href="{{ path('demande_conge_edit', {id: demande.id}) }}" class="lp-icon-btn" title="Modifier">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                            </a>
-                        {% endif %}
-                        {% if is_granted('DEMANDE_ENVOYER', demande) %}
-                            <form method="post" action="{{ path('demande_conge_envoyer', {id: demande.id}) }}" data-confirm-message="Envoyer cette demande pour approbation ? Elle ne sera plus modifiable directement.">
-                                <input type="hidden" name="_token" value="{{ csrf_token('envoyer' ~ demande.id) }}">
-                                <button type="submit" class="lp-icon-btn lp-icon-btn-primary" title="Valider">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
-                                </button>
-                            </form>
-                        {% endif %}
-                        {% if is_granted('DEMANDE_ANNULATION_DEMANDER', demande) %}
-                            <button type="button" class="lp-icon-btn" title="Demander l'annulation" data-annulation-trigger data-demande-id="{{ demande.id }}">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="m15 9-6 6M9 9l6 6"/></svg>
-                            </button>
-                        {% endif %}
-                        {% if is_granted('DEMANDE_DELETE', demande) %}
-                            <form method="post" action="{{ path('demande_conge_annuler', {id: demande.id}) }}" data-confirm-message="Annuler cette demande ?">
-                                <input type="hidden" name="_token" value="{{ csrf_token('annuler' ~ demande.id) }}">
-                                <button type="submit" class="lp-icon-btn lp-icon-btn-danger" title="Supprimer">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
-                                </button>
-                            </form>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
+        <div class="lp-table-card lp-table-card--demandes">
+            <table class="lp-table">
+                <thead>
+                    <tr>
+                        <th>Type de congé</th>
+                        <th>Période</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for demande in demandes %}
+                        <tr>
+                            <td>{{ demande.typeConge.libelle }}</td>
+                            <td>{{ demande.dateDebut|date('d/m/Y') }} au {{ demande.dateFin|date('d/m/Y') }}</td>
+                            <td>
+                                <span class="status-badge status-{{ demande.statut.value }}">{{ demande.statutLabel }}</span>
+                            </td>
+                            <td>
+                                <div class="lp-table-actions">
+                                    <a href="{{ path('demande_conge_show', {id: demande.id}) }}" class="lp-icon-btn" title="Voir">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    </a>
+                                    {% if is_granted('DEMANDE_EDIT', demande) %}
+                                        <a href="{{ path('demande_conge_edit', {id: demande.id}) }}" class="lp-icon-btn" title="Modifier">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                                        </a>
+                                    {% endif %}
+                                    {% if is_granted('DEMANDE_ENVOYER', demande) %}
+                                        <form method="post" action="{{ path('demande_conge_envoyer', {id: demande.id}) }}" data-confirm-message="Envoyer cette demande pour approbation ? Elle ne sera plus modifiable directement.">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('envoyer' ~ demande.id) }}">
+                                            <button type="submit" class="lp-icon-btn lp-icon-btn-primary" title="Valider">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                    {% if is_granted('DEMANDE_ANNULATION_DEMANDER', demande) %}
+                                        <button type="button" class="lp-icon-btn" title="Demander l'annulation" data-annulation-trigger data-demande-id="{{ demande.id }}">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="m15 9-6 6M9 9l6 6"/></svg>
+                                        </button>
+                                    {% endif %}
+                                    {% if is_granted('DEMANDE_DELETE', demande) %}
+                                        <form method="post" action="{{ path('demande_conge_annuler', {id: demande.id}) }}" data-confirm-message="Annuler cette demande ?">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('annuler' ~ demande.id) }}">
+                                            <button type="submit" class="lp-icon-btn lp-icon-btn-danger" title="Annuler">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     {% endif %}
 {% endblock %}
 
