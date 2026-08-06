@@ -7,6 +7,28 @@
         <h1>Modifier {{ utilisateur.nomComplet }}</h1>
     </div>
 
+    {% if not utilisateur.actif %}
+        {% set roleSouhaiteInfo = {
+            'ROLE_EMPLOYE': {'label': 'Employé', 'badge': 'lp-role-badge-employe'},
+            'ROLE_RESPONSABLE': {'label': 'Responsable', 'badge': 'lp-role-badge-responsable'},
+            'ROLE_RH': {'label': 'RH', 'badge': 'lp-role-badge-rh'},
+        }[utilisateur.roleSouhaite] ?? null %}
+        <div class="lp-validation-banner">
+            <div class="lp-validation-banner-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+            </div>
+            <div>
+                <strong>Compte en attente de validation</strong>
+                {% if roleSouhaiteInfo %}
+                    <p>Rôle demandé : <span class="lp-role-badge {{ roleSouhaiteInfo.badge }}">{{ roleSouhaiteInfo.label }}</span></p>
+                {% elseif utilisateur.roleSouhaite %}
+                    <p>Rôle demandé : <span class="lp-role-badge lp-role-badge-employe">{{ utilisateur.roleSouhaite }}</span></p>
+                {% endif %}
+                <p>Choisissez le rôle réel et cochez « Compte actif » pour activer ce compte.</p>
+            </div>
+        </div>
+    {% endif %}
+
     <div class="lp-form-card">
         {{ form_start(form, {attr: {class: 'lp-form'}}) }}
             {{ form_errors(form) }}

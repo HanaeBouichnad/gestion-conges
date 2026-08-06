@@ -8,15 +8,28 @@ use App\Entity\SoldeConge;
 use App\Entity\TypeConge;
 use App\Entity\User;
 use App\Repository\SoldeCongeRepository;
+use App\Repository\TypeCongeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class SoldeCongeManager
 {
     public function __construct(
         private readonly SoldeCongeRepository $soldeCongeRepository,
+        private readonly TypeCongeRepository $typeCongeRepository,
         private readonly JoursOuvresCalculator $joursOuvresCalculator,
         private readonly EntityManagerInterface $em,
     ) {
+    }
+
+    /**
+     * Initialise le solde de l'employé pour chaque type de congé actif (RG-29/31), au plafond
+     * de référence du type (TypeConge.soldeMax). N'écrase pas les soldes déjà existants.
+     */
+    public function initialiserSoldes(User $employe): void
+    {
+        foreach ($this->typeCongeRepository->findBy(['actif' => true]) as $type) {
+            $this->trouverOuCreerSolde($employe, $type);
+        }
     }
 
     /**

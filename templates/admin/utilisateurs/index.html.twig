@@ -61,6 +61,9 @@
                                 <span class="lp-table-badge {{ utilisateur.actif ? 'lp-table-badge-yes' : 'lp-table-badge-no' }}">
                                     {{ utilisateur.actif ? 'Actif' : 'Inactif' }}
                                 </span>
+                                {% if not utilisateur.actif and utilisateur.roleSouhaite %}
+                                    <br><span class="lp-page-subtitle" style="font-size: 0.75rem;">Demande : {{ {'ROLE_EMPLOYE': 'Employé', 'ROLE_RESPONSABLE': 'Responsable', 'ROLE_RH': 'RH'}[utilisateur.roleSouhaite] ?? utilisateur.roleSouhaite }}</span>
+                                {% endif %}
                             </td>
                             <td>{{ utilisateur.derniereConnexionAt ? utilisateur.derniereConnexionAt|date('d/m/Y H:i', 'Africa/Casablanca') : 'Jamais connecté' }}</td>
                             <td>

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
+use App\Service\SoldeCongeManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,8 +40,12 @@ class AdminUserController extends AbstractController
     }
 
     #[Route('/nouveau', name: 'admin_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher): Response
-    {
+    public function new(
+        Request $request,
+        EntityManagerInterface $em,
+        UserPasswordHasherInterface $passwordHasher,
+        SoldeCongeManager $soldeCongeManager
+    ): Response {
         $user = new User();
         $user->setActif(true);
 
@@ -48,10 +53,18 @@ class AdminUserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setRoles([$form->get('rolePrincipal')->getData()]);
+            $role = $form->get('rolePrincipal')->getData();
+            $user->setRoles([$role]);
             $user->setPassword($passwordHasher->hashPassword($user, $form->get('password')->getData()));
 
             $em->persist($user);
+
+            // RG-29/31 : un utilisateur doit disposer de ses soldes dès sa création, comme le font
+            // les fixtures. Les comptes admin ne sont pas des employés soumis aux congés (cf. fixtures).
+            if ($role !== 'ROLE_ADMIN') {
+                $soldeCongeManager->initialiserSoldes($user);
+            }
+
             $em->flush();
 
             $this->addFlash('success', "L'utilisateur a été créé.");
@@ -62,14 +75,24 @@ class AdminUserController extends AbstractController
     }
 
     #[Route('/{id}/modifier', name: 'admin_user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, EntityManagerInterface $em): Response
+    public function edit(Request $request, User $user, EntityManagerInterface $em, SoldeCongeManager $soldeCongeManager): Response
     {
+        $etaitActif = $user->isActif();
+
         $form = $this->createForm(UserType::class, $user, ['is_creation' => false]);
         $form->get('rolePrincipal')->setData($this->rolePrincipal($user));
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setRoles([$form->get('rolePrincipal')->getData()]);
+            $role = $form->get('rolePrincipal')->getData();
+            $user->setRoles([$role]);
+
+            // Un compte activé (ex. validation d'une inscription libre-service) doit repartir
+            // avec ses soldes initialisés, comme n'importe quel utilisateur créé par un admin.
+            if (!$etaitActif && $user->isActif() && $role !== 'ROLE_ADMIN') {
+                $soldeCongeManager->initialiserSoldes($user);
+            }
+
             $em->flush();
 
             $this->addFlash('success', "L'utilisateur a été modifié.");
