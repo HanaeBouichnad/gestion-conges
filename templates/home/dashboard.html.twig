@@ -7,235 +7,150 @@
     <div class="lp-container">
         {% set joursSemaine = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'] %}
         {% set moisAnnee = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'] %}
+        {% set moisAbrev = ['JAN', 'FÉV', 'MAR', 'AVR', 'MAI', 'JUIN', 'JUIL', 'AOÛT', 'SEP', 'OCT', 'NOV', 'DÉC'] %}
 
-        {% if vueAdmin %}
-            {% set moisAbrev = ['JAN', 'FÉV', 'MAR', 'AVR', 'MAI', 'JUIN', 'JUIL', 'AOÛT', 'SEP', 'OCT', 'NOV', 'DÉC'] %}
-
-            <div class="lp-dashboard-header-row">
-                <div class="lp-dashboard-header" style="margin-bottom: 0;">
-                    <h1>Bonjour Admin,</h1>
-                    <span class="lp-dashboard-subtitle">Voici un aperçu général de la gestion des congés dans votre entreprise.</span>
-                </div>
-                <span class="lp-dashboard-date-pill">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
-                    {{ joursSemaine[("now"|date('N')) - 1] }} {{ "now"|date('j') }} {{ moisAnnee[("now"|date('n')) - 1] }} {{ "now"|date('Y') }}
-                </span>
+        <div class="lp-dashboard-header-row">
+            <div class="lp-dashboard-header" style="margin-bottom: 0;">
+                <h1>Bonjour Admin,</h1>
+                <span class="lp-dashboard-subtitle">Voici un aperçu général de la gestion des congés dans votre entreprise.</span>
             </div>
+            <span class="lp-dashboard-date-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+                {{ joursSemaine[("now"|date('N')) - 1] }} {{ "now"|date('j') }} {{ moisAnnee[("now"|date('n')) - 1] }} {{ "now"|date('Y') }}
+            </span>
+        </div>
 
-            <div class="lp-stat-grid" style="margin-top: 1.8rem;">
-                <div class="lp-stat-card">
-                    <div class="lp-stat-icon" style="background:#E9F1FD; color:#2E7DE1;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4.5"/></svg>
-                    </div>
-                    <div>
-                        <div class="lp-stat-label">Demandes en attente</div>
-                        <div class="lp-stat-value">{{ nbDemandesEnAttente }}</div>
-                    </div>
+        <div class="lp-stat-grid" style="margin-top: 1.8rem;">
+            <div class="lp-stat-card">
+                <div class="lp-stat-icon" style="background:#E9F1FD; color:#2E7DE1;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4.5"/></svg>
                 </div>
-                <div class="lp-stat-card">
-                    <div class="lp-stat-icon" style="background:#E9FBF1; color:#22C55E;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4L19 6"/></svg>
-                    </div>
-                    <div>
-                        <div class="lp-stat-label">Demandes approuvées</div>
-                        <div class="lp-stat-value">{{ nbDemandesApprouveesCeMois }}</div>
-                        <div class="lp-stat-sub">Ce mois-ci</div>
-                    </div>
-                </div>
-                <div class="lp-stat-card">
-                    <div class="lp-stat-icon" style="background:#FEF3E4; color:#F59E0B;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m15 9-6 6M9 9l6 6"/></svg>
-                    </div>
-                    <div>
-                        <div class="lp-stat-label">Demandes refusées</div>
-                        <div class="lp-stat-value">{{ nbDemandesRefuseesCeMois }}</div>
-                        <div class="lp-stat-sub">Ce mois-ci</div>
-                    </div>
-                </div>
-                <div class="lp-stat-card">
-                    <div class="lp-stat-icon" style="background:#F3E9FD; color:#8B5CF6;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                    </div>
-                    <div>
-                        <div class="lp-stat-label">Employés actifs</div>
-                        <div class="lp-stat-value">{{ nbEmployesActifs }}</div>
-                        <div class="lp-stat-sub">Utilisateurs</div>
-                    </div>
+                <div>
+                    <div class="lp-stat-label">Demandes en attente</div>
+                    <div class="lp-stat-value">{{ nbDemandesEnAttente }}</div>
                 </div>
             </div>
-
-            <div class="lp-dashboard-section" style="margin-top: 0;">
-                <div class="lp-feature-card">
-                    <h2 class="lp-dashboard-subhead" style="margin-bottom: 1.2rem;">Accès rapides</h2>
-                    <div class="lp-quicklinks-grid">
-                        <a href="{{ path('admin_type_conge_index') }}" class="lp-quicklink">
-                            <span class="lp-quicklink-icon" style="background:#E9F1FD; color:#2E7DE1;">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4.5"/></svg>
-                            </span>
-                            <span>Types de congés</span>
-                            <svg class="lp-quicklink-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
-                        </a>
-                        <a href="{{ path('admin_type_conge_index') }}" class="lp-quicklink">
-                            <span class="lp-quicklink-icon" style="background:#E9FBF1; color:#22C55E;">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l7 4"/></svg>
-                            </span>
-                            <span>Soldes des congés</span>
-                            <svg class="lp-quicklink-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
-                        </a>
-                        <a href="{{ path('admin_jour_ferie_index') }}" class="lp-quicklink">
-                            <span class="lp-quicklink-icon" style="background:#F3E9FD; color:#8B5CF6;">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
-                            </span>
-                            <span>Jours fériés</span>
-                            <svg class="lp-quicklink-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
-                        </a>
-                        <a href="{{ path('rh_export_csv') }}" class="lp-quicklink">
-                            <span class="lp-quicklink-icon" style="background:#E9F1FD; color:#2E7DE1;">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
-                            </span>
-                            <span>Exporter les données</span>
-                            <svg class="lp-quicklink-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
-                        </a>
-                    </div>
+            <div class="lp-stat-card">
+                <div class="lp-stat-icon" style="background:#E9FBF1; color:#22C55E;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4L19 6"/></svg>
+                </div>
+                <div>
+                    <div class="lp-stat-label">Demandes approuvées</div>
+                    <div class="lp-stat-value">{{ nbDemandesApprouveesCeMois }}</div>
+                    <div class="lp-stat-sub">Ce mois-ci</div>
                 </div>
             </div>
+            <div class="lp-stat-card">
+                <div class="lp-stat-icon" style="background:#FEF3E4; color:#F59E0B;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m15 9-6 6M9 9l6 6"/></svg>
+                </div>
+                <div>
+                    <div class="lp-stat-label">Demandes refusées</div>
+                    <div class="lp-stat-value">{{ nbDemandesRefuseesCeMois }}</div>
+                    <div class="lp-stat-sub">Ce mois-ci</div>
+                </div>
+            </div>
+            <div class="lp-stat-card">
+                <div class="lp-stat-icon" style="background:#F3E9FD; color:#8B5CF6;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <div>
+                    <div class="lp-stat-label">Employés actifs</div>
+                    <div class="lp-stat-value">{{ nbEmployesActifs }}</div>
+                    <div class="lp-stat-sub">Utilisateurs</div>
+                </div>
+            </div>
+        </div>
 
-            <div class="lp-dashboard-section lp-dashboard-grid">
-                <div class="lp-feature-card">
-                    <h2 class="lp-dashboard-subhead" style="margin-bottom: 1.1rem;">Utilisateurs</h2>
-                    {% if utilisateursApercu is empty %}
-                        <p class="lp-empty-text">Aucun utilisateur.</p>
-                    {% else %}
-                        <div class="lp-user-preview-list">
-                            {% for utilisateur in utilisateursApercu %}
-                                <div class="lp-user-preview-item">
-                                    {{ m.avatar(utilisateur) }}
-                                    <div>
-                                        <span class="lp-user-preview-name">{{ utilisateur.nomComplet }}</span>
-                                        {{ m.roleBadge(utilisateur) }}
-                                    </div>
+        <div class="lp-dashboard-section" style="margin-top: 0;">
+            <div class="lp-feature-card">
+                <h2 class="lp-dashboard-subhead" style="margin-bottom: 1.2rem;">Accès rapides</h2>
+                <div class="lp-quicklinks-grid">
+                    <a href="{{ path('admin_type_conge_index') }}" class="lp-quicklink">
+                        <span class="lp-quicklink-icon" style="background:#E9F1FD; color:#2E7DE1;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4.5"/></svg>
+                        </span>
+                        <span>Types de congés</span>
+                        <svg class="lp-quicklink-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+                    </a>
+                    <a href="{{ path('admin_type_conge_index') }}" class="lp-quicklink">
+                        <span class="lp-quicklink-icon" style="background:#E9FBF1; color:#22C55E;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l7 4"/></svg>
+                        </span>
+                        <span>Soldes des congés</span>
+                        <svg class="lp-quicklink-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+                    </a>
+                    <a href="{{ path('admin_jour_ferie_index') }}" class="lp-quicklink">
+                        <span class="lp-quicklink-icon" style="background:#F3E9FD; color:#8B5CF6;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+                        </span>
+                        <span>Jours fériés</span>
+                        <svg class="lp-quicklink-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+                    </a>
+                    <a href="{{ path('rh_export_csv') }}" class="lp-quicklink">
+                        <span class="lp-quicklink-icon" style="background:#E9F1FD; color:#2E7DE1;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+                        </span>
+                        <span>Exporter les données</span>
+                        <svg class="lp-quicklink-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="lp-dashboard-section lp-dashboard-grid">
+            <div class="lp-feature-card">
+                <h2 class="lp-dashboard-subhead" style="margin-bottom: 1.1rem;">Utilisateurs</h2>
+                {% if utilisateursApercu is empty %}
+                    <p class="lp-empty-text">Aucun utilisateur.</p>
+                {% else %}
+                    <div class="lp-user-preview-list">
+                        {% for utilisateur in utilisateursApercu %}
+                            <div class="lp-user-preview-item">
+                                {{ m.avatar(utilisateur) }}
+                                <div>
+                                    <span class="lp-user-preview-name">{{ utilisateur.nomComplet }}</span>
+                                    {{ m.roleBadge(utilisateur) }}
                                 </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                    <a href="{{ path('admin_user_index') }}" class="lp-see-more">Voir tous les utilisateurs &rarr;</a>
-                </div>
-
-                <div class="lp-feature-card">
-                    <div class="lp-page-header" style="margin-bottom: 1rem;">
-                        <h2 class="lp-dashboard-subhead">{{ moisAnnee[mois - 1]|capitalize }} {{ annee }}</h2>
-                        <div class="lp-month-nav">
-                            <a href="{{ path('app_home', {mois: moisPrecedent.format('n'), annee: moisPrecedent.format('Y')}) }}" class="lp-icon-btn" title="Mois précédent">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg>
-                            </a>
-                            <a href="{{ path('app_home', {mois: moisSuivant.format('n'), annee: moisSuivant.format('Y')}) }}" class="lp-icon-btn" title="Mois suivant">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="lp-calendar-weekdays">
-                        <span>Lun</span><span>Mar</span><span>Mer</span><span>Jeu</span><span>Ven</span><span>Sam</span><span>Dim</span>
-                    </div>
-                    <div class="lp-cal-weeks">
-                        {% for semaine in semaines %}
-                            <div class="lp-cal-week">
-                                {% for jour in semaine %}
-                                    <div class="lp-cal-day {{ jour.dansMoisCourant ? '' : 'lp-cal-day-muted' }}" style="grid-column: {{ loop.index }}; grid-row: 1 / -1;">
-                                        <span class="lp-cal-day-number {{ jour.estAujourdhui ? 'lp-cal-day-today' : (jour.estFerie ? 'lp-cal-day-ferie' : '') }}" title="{{ jour.estFerie ? jour.libelleFerie }}">{{ jour.jour }}</span>
-                                    </div>
-                                {% endfor %}
                             </div>
                         {% endfor %}
                     </div>
-                    <div class="lp-cal-legend">
-                        <span class="lp-legend-item"><span class="lp-legend-swatch lp-legend-swatch-aujourdhui"></span>Aujourd'hui</span>
-                        <span class="lp-legend-item"><span class="lp-legend-swatch lp-legend-swatch-ferie"></span>Jour férié</span>
-                    </div>
-                </div>
-            </div>
-        {% else %}
-            <div class="lp-dashboard-hero">
-                <div class="lp-dashboard-hero-text">
-                    <div class="lp-dashboard-header">
-                        <h1>Bonjour {{ app.user.prenom }}</h1>
-                        <span class="lp-dashboard-subtitle">{{ joursSemaine[("now"|date('N')) - 1] }} {{ "now"|date('j') }} {{ moisAnnee[("now"|date('n')) - 1] }} {{ "now"|date('Y') }}</span>
-                    </div>
-
-                    <div class="lp-info-banner">
-                        <div class="lp-info-banner-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
-                        </div>
-                        <p>Vous avez <strong>{{ soldeCongeAnnuel }}</strong> jours de congé annuel disponibles.</p>
-                    </div>
-
-                    <a href="{{ path('demande_conge_new') }}" class="lp-btn lp-btn-primary lp-dashboard-cta">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-                        Nouvelle demande de congé
-                    </a>
-                </div>
-
-                <div class="lp-dashboard-hero-image">
-                    <img src="{{ asset('images/calendrier.png') }}" alt="">
-                </div>
-            </div>
-
-            <div class="lp-dash-cards">
-                <a href="{{ path('solde_mes_soldes') }}" class="lp-dash-card">
-                    <div class="lp-dash-card-icon" style="background:#E9FBF1; color:#22C55E;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V9M12 19V5M20 19v-7"/></svg>
-                    </div>
-                    <h3>Solde de congé annuel</h3>
-                    <div class="lp-dash-card-value">{{ soldeCongeAnnuel }}</div>
-                    <p class="lp-dash-card-meta">jours disponibles</p>
-                    <span class="lp-see-more">Voir le détail du solde &rarr;</span>
-                </a>
-
-                <a href="{{ path('calendrier_index') }}" class="lp-dash-card">
-                    <div class="lp-dash-card-icon" style="background:#E9F1FD; color:#2E7DE1;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
-                    </div>
-                    <h3>Prochaine absence</h3>
-                    {% if prochaineAbsence %}
-                        <div class="lp-dash-card-value" style="font-size:1.3rem;">{{ prochaineAbsence.dateDebut|date('d/m') }} au {{ prochaineAbsence.dateFin|date('d/m/Y') }}</div>
-                        <p class="lp-dash-card-meta">{{ prochaineAbsence.typeConge.libelle }}</p>
-                    {% else %}
-                        <p class="lp-dash-card-meta" style="margin-top:0.6rem;">Aucune absence prévue</p>
-                    {% endif %}
-                    <span class="lp-see-more">Voir le calendrier &rarr;</span>
-                </a>
-
-                <a href="{{ path('demande_conge_index') }}" class="lp-dash-card">
-                    <div class="lp-dash-card-icon" style="background:#FEF3E4; color:#F59E0B;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4.5"/></svg>
-                    </div>
-                    <h3>Mes demandes</h3>
-                    <p class="lp-dash-card-meta">{{ counts.approuve }} approuvée{{ counts.approuve > 1 ? 's' : '' }}, {{ counts.brouillon }} brouillon{{ counts.brouillon > 1 ? 's' : '' }}, {{ counts.en_attente }} en attente</p>
-                    <span class="lp-see-more">Voir toutes mes demandes &rarr;</span>
-                </a>
-
-                <a href="{{ path('calendrier_index') }}" class="lp-dash-card">
-                    <div class="lp-dash-card-icon" style="background:#F3E9FD; color:#8B5CF6;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/><circle cx="8" cy="15" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="15" r="1.4" fill="currentColor" stroke="none"/><circle cx="16" cy="15" r="1.4" fill="currentColor" stroke="none"/></svg>
-                    </div>
-                    <h3>Calendrier des absences</h3>
-                    <p class="lp-dash-card-meta">Visualisez les absences et jours fériés de toute l'équipe.</p>
-                    <span class="lp-see-more">Voir le calendrier &rarr;</span>
-                </a>
-
-                {% if is_granted('ROLE_RESPONSABLE') %}
-                    <a href="{{ path('approbation_index') }}" class="lp-dash-card lp-dash-card-wide">
-                        <div class="lp-dash-card-icon" style="background:#FDECEC; color:#EF4444;">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9.5 12l1.8 1.8L15 10"/></svg>
-                        </div>
-                        <div>
-                            <h3>À approuver</h3>
-                            <p class="lp-dash-card-meta">{{ aApprouver|length }} demande{{ aApprouver|length > 1 ? 's' : '' }} en attente de ta validation</p>
-                        </div>
-                        <span class="lp-see-more">Traiter &rarr;</span>
-                    </a>
                 {% endif %}
+                <a href="{{ path('admin_user_index') }}" class="lp-see-more">Voir tous les utilisateurs &rarr;</a>
             </div>
-        {% endif %}
+
+            <div class="lp-feature-card">
+                <div class="lp-page-header" style="margin-bottom: 1rem;">
+                    <h2 class="lp-dashboard-subhead">{{ moisAnnee[mois - 1]|capitalize }} {{ annee }}</h2>
+                    <div class="lp-month-nav">
+                        <a href="{{ path('app_home', {mois: moisPrecedent.format('n'), annee: moisPrecedent.format('Y')}) }}" class="lp-icon-btn" title="Mois précédent">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg>
+                        </a>
+                        <a href="{{ path('app_home', {mois: moisSuivant.format('n'), annee: moisSuivant.format('Y')}) }}" class="lp-icon-btn" title="Mois suivant">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="lp-calendar-weekdays">
+                    <span>Lun</span><span>Mar</span><span>Mer</span><span>Jeu</span><span>Ven</span><span>Sam</span><span>Dim</span>
+                </div>
+                <div class="lp-cal-weeks">
+                    {% for semaine in semaines %}
+                        <div class="lp-cal-week">
+                            {% for jour in semaine %}
+                                <div class="lp-cal-day {{ jour.dansMoisCourant ? '' : 'lp-cal-day-muted' }}" style="grid-column: {{ loop.index }}; grid-row: 1 / -1;">
+                                    <span class="lp-cal-day-number {{ jour.estAujourdhui ? 'lp-cal-day-today' : (jour.estFerie ? 'lp-cal-day-ferie' : '') }}" title="{{ jour.estFerie ? jour.libelleFerie }}">{{ jour.jour }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="lp-cal-legend">
+                    <span class="lp-legend-item"><span class="lp-legend-swatch lp-legend-swatch-aujourdhui"></span>Aujourd'hui</span>
+                    <span class="lp-legend-item"><span class="lp-legend-swatch lp-legend-swatch-ferie"></span>Jour férié</span>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 

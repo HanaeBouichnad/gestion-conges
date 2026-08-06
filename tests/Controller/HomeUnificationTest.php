@@ -14,36 +14,31 @@ class HomeUnificationTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('.lp-hero');
-        $this->assertSelectorExists('.lp-role-link');
+        $this->assertSelectorExists('.lp-navbar .lp-btn-primary');
         $this->assertSelectorNotExists('.lp-dashboard');
     }
 
-    public function testHomeConnectedEmployeShowsDashboard(): void
+    public function testHomeConnectedEmployeRedirectsToMesSoldes(): void
     {
         $client = static::createClient();
         $userRepository = static::getContainer()->get(UserRepository::class);
         $user = $userRepository->findOneBy(['email' => 'employe@example.com']);
         $client->loginUser($user);
 
-        $crawler = $client->request('GET', '/');
+        $client->request('GET', '/');
+        $this->assertResponseRedirects('/mon-solde');
 
-        $this->assertResponseIsSuccessful();
-        $this->assertSelectorNotExists('.lp-hero');
-        $this->assertSelectorNotExists('.lp-role-link');
+        $client->followRedirect();
+
         $this->assertSelectorTextNotContains('.lp-nav-links', 'À propos');
         $this->assertSelectorTextNotContains('.lp-nav-links', 'Fonctionnalités');
+        $this->assertSelectorTextNotContains('.lp-nav-links', 'Tableau de bord');
         $this->assertSelectorExists('.lp-nav-link-active');
-        $this->assertSelectorTextContains('.lp-nav-link-active', 'Tableau de bord');
-        $this->assertSelectorExists('.lp-dashboard');
-        $this->assertSelectorExists('.lp-info-banner');
-        $this->assertSelectorExists('.lp-dash-card');
-        $this->assertCount(4, $crawler->filter('.lp-dash-card:not(.lp-dash-card-wide)'));
-        $this->assertSelectorTextContains('.lp-dashboard-header h1', 'Bonjour ' . $user->getPrenom());
-        $this->assertSelectorTextContains('.lp-dashboard-subtitle', (string) (int) date('j'));
+        $this->assertSelectorTextContains('.lp-nav-link-active', 'Mes soldes');
+        $this->assertSelectorNotExists('.lp-info-banner');
+        $this->assertSelectorNotExists('.lp-dashboard-header');
         $this->assertSelectorTextContains('.lp-user-menu-toggle', $user->getNomComplet());
-        $this->assertSelectorExists('a[href="' . $client->getContainer()->get('router')->generate('demande_conge_index') . '"]');
-        $this->assertSelectorExists('a[href="' . $client->getContainer()->get('router')->generate('demande_conge_new') . '"]');
-        $this->assertSelectorExists('.lp-dashboard-hero-image img[src$="images/calendrier.png"]');
+        $this->assertSelectorNotExists('.lp-dash-card-wide');
     }
 
     public function testHomeConnectedResponsableShowsApprovalCard(): void
@@ -54,10 +49,31 @@ class HomeUnificationTest extends WebTestCase
         $client->loginUser($user);
 
         $client->request('GET', '/');
+        $this->assertResponseRedirects('/mon-solde');
 
-        $this->assertResponseIsSuccessful();
+        $client->followRedirect();
+
         $this->assertSelectorExists('.lp-dash-card-wide');
         $this->assertSelectorTextContains('.lp-dash-card-wide h3', 'À approuver');
+    }
+
+    public function testHomeConnectedRhShowsApprovalAndCancellationCards(): void
+    {
+        $client = static::createClient();
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $user = $userRepository->findOneBy(['email' => 'rh@example.com']);
+        $client->loginUser($user);
+
+        $client->request('GET', '/');
+        $this->assertResponseRedirects('/mon-solde');
+
+        $client->followRedirect();
+
+        $cards = $client->getCrawler()->filter('.lp-dash-card-wide');
+        $this->assertCount(2, $cards);
+        $this->assertStringContainsString('À approuver', $cards->eq(0)->text());
+        $this->assertStringContainsString('À annuler', $cards->eq(1)->text());
+        $this->assertSelectorExists('a[href="' . $client->getContainer()->get('router')->generate('rh_annulation_index') . '"].lp-dash-card-wide');
     }
 
     public function testHomeConnectedAdminShowsAdminDashboard(): void
@@ -87,6 +103,6 @@ class HomeUnificationTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('.lp-navbar');
-        $this->assertSelectorExists('.lp-role-link');
+        $this->assertSelectorExists('.lp-navbar .lp-btn-primary');
     }
 }

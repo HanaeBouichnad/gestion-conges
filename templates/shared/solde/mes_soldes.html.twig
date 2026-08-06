@@ -3,54 +3,105 @@
 {% block title %}Mes soldes de congé{% endblock %}
 
 {% block body %}
+    {% if is_granted('ROLE_RESPONSABLE') %}
+        <div class="lp-dash-cards">
+            <a href="{{ path('approbation_index') }}" class="lp-dash-card lp-dash-card-wide">
+                <div class="lp-dash-card-icon" style="background:#FDECEC; color:#EF4444;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9.5 12l1.8 1.8L15 10"/></svg>
+                </div>
+                <div>
+                    <h3>À approuver</h3>
+                    <p class="lp-dash-card-meta">{{ aApprouver|length }} demande{{ aApprouver|length > 1 ? 's' : '' }} en attente de ta validation</p>
+                </div>
+                <span class="lp-see-more">Traiter &rarr;</span>
+            </a>
+
+            {% if is_granted('ROLE_RH') %}
+                <a href="{{ path('rh_annulation_index') }}" class="lp-dash-card lp-dash-card-wide">
+                    <div class="lp-dash-card-icon" style="background:#FDECEC; color:#EF4444;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12a8 8 0 0 1 14.5-4.5"/><path d="M20 4v5h-5"/><path d="M20 12a8 8 0 0 1-14.5 4.5"/><path d="M4 20v-5h5"/></svg>
+                    </div>
+                    <div>
+                        <h3>À annuler</h3>
+                        <p class="lp-dash-card-meta">{{ aAnnuler }} demande{{ aAnnuler > 1 ? 's' : '' }} en attente de ta validation</p>
+                    </div>
+                    <span class="lp-see-more">Traiter &rarr;</span>
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+
     <div class="lp-page-header">
         <h1>Répartition de mon solde</h1>
+        <div class="lp-year-banner">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+            <span class="lp-year-banner-label">Année en cours</span>
+            <span class="lp-year-banner-dates">01 janv. &ndash; 31 déc. {{ stats.annee }}</span>
+        </div>
     </div>
 
     <div class="lp-dashboard-section">
         <div class="lp-type-grid">
-            {% for solde in soldes %}
-                {% set libelleLower = solde.typeConge.libelle|lower %}
-                {% if 'annuel' in libelleLower %}
-                    {% set typeKey = 'annuel' %}
-                {% elseif 'maladie' in libelleLower %}
-                    {% set typeKey = 'maladie' %}
-                {% elseif 'récup' in libelleLower or 'recup' in libelleLower %}
-                    {% set typeKey = 'recuperation' %}
-                {% elseif 'exceptionnel' in libelleLower %}
-                    {% set typeKey = 'exceptionnel' %}
-                {% elseif 'sans solde' in libelleLower %}
-                    {% set typeKey = 'sans-solde' %}
-                {% else %}
-                    {% set typeKey = 'defaut' %}
-                {% endif %}
-
-                <div class="lp-type-card lp-type-card--{{ typeKey }}">
-                    <svg class="lp-type-card-wave" viewBox="0 0 200 40" preserveAspectRatio="none">
-                        <path d="M0 22 Q 50 4 100 22 T 200 22 V40 H0 Z"/>
-                    </svg>
-
+            {% for item in stats.parType %}
+                <div class="lp-type-card lp-type-card--{{ item.typeKey }}">
                     <div class="lp-type-card-icon">
-                        {% if typeKey == 'annuel' %}
+                        {% if item.typeKey == 'annuel' %}
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C7 3 3 8 3 12h18C21 8 17 3 12 3z"/><path d="M12 12v7.5"/><path d="M9.5 19.5c0 .9 1.1 1.5 2.5 1.5s2.5-.6 2.5-1.5"/></svg>
-                        {% elseif typeKey == 'maladie' %}
+                        {% elseif item.typeKey == 'maladie' %}
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M12 8.5v6M9 11.5h6"/></svg>
-                        {% elseif typeKey == 'recuperation' %}
+                        {% elseif item.typeKey == 'recuperation' %}
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 14.5-4.5"/><path d="M20 4v5h-5"/><path d="M20 12a8 8 0 0 1-14.5 4.5"/><path d="M4 20v-5h5"/></svg>
-                        {% elseif typeKey == 'exceptionnel' %}
+                        {% elseif item.typeKey == 'exceptionnel' %}
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M4 9h16M12 9v11"/><path d="M12 9C9.7 9 8 7.6 8 6a2 2 0 0 1 4 0 2 2 0 0 1 4 0c0 1.6-1.7 3-4 3z"/></svg>
-                        {% elseif typeKey == 'sans-solde' %}
+                        {% elseif item.typeKey == 'sans-solde' %}
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M6.5 6.5l11 11"/></svg>
                         {% else %}
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
                         {% endif %}
                     </div>
 
-                    <div class="lp-type-card-label">{{ solde.typeConge.libelle }}</div>
-                    <div class="lp-type-card-value">{{ solde.solde }}<span>{{ solde.solde > 1 ? 'jours' : 'jour' }}</span></div>
-                    <span class="lp-type-card-badge">Disponible</span>
+                    <h3 class="lp-type-card-label">{{ item.typeConge.libelle }}</h3>
+                    <div class="lp-type-card-value">{{ item.disponible }}</div>
+                    <p class="lp-type-card-caption">{{ item.disponible > 1 ? 'jours disponibles' : 'jour disponible' }}</p>
+
+                    <div class="lp-solde-bar">
+                        <div class="lp-solde-bar-fill" style="width: {{ item.pctUtilise }}%;"></div>
+                    </div>
+                    <p class="lp-type-card-usage">{{ item.utilise }} / {{ item.total }} utilisé</p>
+
+                    <a href="{{ path('demande_conge_index') }}" class="lp-btn lp-btn-outline lp-type-card-btn">Voir le détail</a>
                 </div>
             {% endfor %}
+        </div>
+
+        <div class="lp-summary-section">
+            <h2 class="lp-summary-title">Résumé global</h2>
+            <div class="lp-summary-grid">
+                <div class="lp-donut-card">
+                    <div class="lp-donut-total">
+                        <div class="lp-donut-total-value">{{ stats.global.disponible }}</div>
+                        <p class="lp-donut-total-label">{{ stats.global.disponible > 1 ? 'jours disponibles au total' : 'jour disponible au total' }}</p>
+                        <ul class="lp-solde-legend-list">
+                            <li><span class="lp-solde-dot" style="background:#22C55E;"></span>Utilisé <b>{{ stats.global.utilise }} j.</b></li>
+                            <li><span class="lp-solde-dot" style="background:#F59E0B;"></span>Planifié <b>{{ stats.global.planifie }} j.</b></li>
+                            <li><span class="lp-solde-dot" style="background:#2E7DE1;"></span>Disponible <b>{{ stats.global.disponible }} j.</b></li>
+                        </ul>
+                    </div>
+                    <div class="lp-donut" style="background: conic-gradient(#22C55E 0% {{ stats.global.pctUtilise }}%, #F59E0B {{ stats.global.pctUtilise }}% {{ stats.global.pctUtilise + stats.global.pctPlanifie }}%, #2E7DE1 {{ stats.global.pctUtilise + stats.global.pctPlanifie }}% 100%);">
+                        <div class="lp-donut-hole"></div>
+                    </div>
+                </div>
+
+                <div class="lp-summary-tip">
+                    <div class="lp-summary-tip-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+                    </div>
+                    <div>
+                        <strong>Bon à savoir</strong>
+                        <p>Les jours « planifiés » correspondent à des demandes déjà approuvées mais pas encore commencées. Votre solde disponible est mis à jour dès qu'une demande est validée par votre responsable.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

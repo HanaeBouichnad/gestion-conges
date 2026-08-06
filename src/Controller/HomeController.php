@@ -21,9 +21,13 @@ class HomeController extends AbstractController
             return $this->render('home/index.html.twig');
         }
 
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            return $this->redirectToRoute('solde_mes_soldes');
+        }
+
         $mois = $request->query->get('mois') ? (int) $request->query->get('mois') : null;
         $annee = $request->query->get('annee') ? (int) $request->query->get('annee') : null;
 
-        return $this->render('home/index.html.twig', $dashboardDataProvider->getData($user, $mois, $annee));
+        return $this->render('home/index.html.twig', $dashboardDataProvider->getData($mois, $annee));
     }
 }
