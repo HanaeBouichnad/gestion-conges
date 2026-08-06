@@ -228,7 +228,7 @@ class DemandeCongeController extends AbstractController
         $em->flush();
 
         $this->addFlash('success', 'Votre demande d\'annulation a été envoyée aux RH.');
-        return $this->redirectToRoute('demande_conge_show', ['id' => $demande->getId()]);
+        return $this->redirectToRoute('demande_conge_index');
     }
 
     /** @return User[] */
