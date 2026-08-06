@@ -118,4 +118,5 @@ Définies dans `.env` (valeurs par défaut) et surchargeables dans `.env.local` 
 
 ## Auteur
 
-Projet réalisé dans le cadre d'un stage.
+Hanae Bouichnad — Étudiante en 4e année en développement digital et systèmes d'information (EMSI), 
+projet réalisé dans le cadre d'un stage chez Webodrop pendant l'été 2026.
