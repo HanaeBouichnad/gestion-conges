@@ -1,17 +1,26 @@
 <div class="lp-modal-backdrop{% if modalOpen %} lp-modal-open{% endif %}" id="lp-login-modal" data-close-mode="{{ modalOpen ? 'navigate' : 'hide' }}" data-close-href="{{ path('app_home') }}">
     <div class="login-card" role="dialog" aria-modal="true" aria-labelledby="lp-login-title">
-        <button type="button" class="lp-modal-close" aria-label="Fermer" data-login-close>&times;</button>
+        <div class="login-card-header">
+            <button type="button" class="lp-modal-close" aria-label="Fermer" data-login-close>&times;</button>
 
-        <div class="card-logo">
-            <img src="{{ asset('images/logo.png') }}" alt="Webodrop">
+            <div class="card-logo">
+                <img src="{{ asset('images/logo.png') }}" alt="Webodrop">
+            </div>
+
+            <h2 id="lp-login-title">Bienvenue</h2>
+            <p class="subtitle">Connectez-vous à votre compte pour continuer</p>
         </div>
-
-        <h2 id="lp-login-title">Bienvenue</h2>
-        <p class="subtitle">Connectez-vous à votre compte pour continuer</p>
 
         {% if error is defined and error %}
             <div class="alert alert-danger" style="font-size: 0.85rem;">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
         {% endif %}
+
+        {% for message in app.flashes('success') %}
+            <div class="lp-alert lp-alert-success" style="font-size: 0.85rem;">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="lp-alert lp-alert-error" style="font-size: 0.85rem;">{{ message }}</div>
+        {% endfor %}
 
         <form method="post" action="{{ path('app_login') }}">
             <label class="field-label">Adresse e-mail</label>
@@ -39,6 +48,8 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             </button>
         </form>
+
+        <p class="lp-modal-alt-action">Pas encore de compte ? <a href="{{ path('app_register') }}">S'inscrire</a></p>
     </div>
 </div>
 

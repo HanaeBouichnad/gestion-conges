@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Inscription — Webodrop Congés</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}?v={{ asset_version('images/favicon.png') }}">
+    {% include 'home/styles.html.twig' %}
+</head>
+<body>
+    {% include 'home/content.html.twig' %}
+    {% include 'home/register_modal.html.twig' with {modalOpen: true, form: form} %}
+</body>
+</html>

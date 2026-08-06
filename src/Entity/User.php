@@ -6,11 +6,13 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
+#[UniqueEntity(fields: ['email'], message: 'Un compte existe déjà avec cet email.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -48,6 +50,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $derniereConnexionAt = null;
+
+    // Rôle demandé par l'utilisateur lors de son inscription en libre-service, à titre indicatif
+    // pour l'admin/RH qui valide le compte : le rôle réel accordé reste ROLE_EMPLOYE tant que non validé.
+    #[ORM\Column(length: 30, nullable: true)]
+    private ?string $roleSouhaite = null;
 
     public function __construct()
     {
@@ -122,4 +129,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getDerniereConnexionAt(): ?\DateTimeImmutable { return $this->derniereConnexionAt; }
     public function setDerniereConnexionAt(?\DateTimeImmutable $derniereConnexionAt): static { $this->derniereConnexionAt = $derniereConnexionAt; return $this; }
+
+    public function getRoleSouhaite(): ?string { return $this->roleSouhaite; }
+    public function setRoleSouhaite(?string $roleSouhaite): static { $this->roleSouhaite = $roleSouhaite; return $this; }
 }
